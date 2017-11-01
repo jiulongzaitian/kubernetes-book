@@ -1,3 +1,4 @@
-# My Awesome Book
+# kubernetes 笔记
 
-This file file serves as your book's preface, a great place to describe your book's content and ideas.
+kubernetes 集群搭建，问题汇总，代码解读
+
