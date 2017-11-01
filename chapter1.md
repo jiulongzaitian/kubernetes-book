@@ -1,3 +1,4 @@
-# First Chapter
+# 利用 kubeadm 在 Google Cloud Platform  搭建kubernetes 集群
 
-GitBook allows you to organize your book into chapters, each chapter is stored in a separate file like this one.
+
+
