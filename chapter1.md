@@ -306,7 +306,7 @@ kube-system   kube-scheduler-kube-master                 1/1       Running   0  
   ssh your master node: kube-master to check node status
 
 ```
-# kubectl get nodes
+#kubectl get nodes
 NAME          STATUS     ROLES     AGE       VERSION
 kube-master   Ready      master    20m       v1.8.1
 kube-node1    NotReady   <none>    6m        v1.8.1
