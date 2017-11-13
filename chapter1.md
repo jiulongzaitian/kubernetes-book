@@ -275,7 +275,7 @@ kube-system   kube-scheduler-kube-master                 1/1       Running   0  
 
 4. The output should look something like:
 
-   ```
+ ```
    [kubeadm] WARNING: kubeadm is in beta, please do not use it for production clusters.
    [preflight] Running pre-flight checks
    [preflight] Starting the kubelet service
@@ -296,8 +296,7 @@ kube-system   kube-scheduler-kube-master                 1/1       Running   0  
 
    Run 'kubectl get nodes' on the master to see this machine join.
 
-
-   ```
+ ```
 
 
 
