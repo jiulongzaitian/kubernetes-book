@@ -275,7 +275,8 @@ kube-system   kube-scheduler-kube-master                 1/1       Running   0  
 
 4. The output should look something like:
 
- ```
+ 
+   ```
    [kubeadm] WARNING: kubeadm is in beta, please do not use it for production clusters.
    [preflight] Running pre-flight checks
    [preflight] Starting the kubelet service
@@ -287,7 +288,6 @@ kube-system   kube-scheduler-kube-master                 1/1       Running   0  
    [bootstrap] Detected server version: v1.8.2
    [bootstrap] The server supports the Certificates API (certificates.k8s.io/v1beta1)
 
-
    Node join complete:
    * Certificate signing request sent to master and response
      received.
@@ -295,8 +295,9 @@ kube-system   kube-scheduler-kube-master                 1/1       Running   0  
 
 
    Run 'kubectl get nodes' on the master to see this machine join.
+   ```
 
- ```
+
 
 
 
@@ -305,7 +306,7 @@ kube-system   kube-scheduler-kube-master                 1/1       Running   0  
   ssh your master node: kube-master to check node status
 
 ```
-kubectl get nodes
+#kubectl get nodes
 NAME          STATUS     ROLES     AGE       VERSION
 kube-master   Ready      master    20m       v1.8.1
 kube-node1    NotReady   <none>    6m        v1.8.1
@@ -356,7 +357,7 @@ Nov 01 07:56:16 kube-node1 kubelet[25103]: E1101 07:56:16.912258   25103 kubelet
 
 maybe lack cni config\(10-calico.conf  calico-kubeconfig\) in /etc/cni/net.d/ 
 
-you need copy this two files from kube-master vm install . then ssh to kube-master vm instance, kube-node1 is ready
+you need copy this two files from kube-master vm install . and maybe you need copy /opt/cni/bin/calico-ipam and calico  then ssh to kube-master vm instance, kube-node1 is ready
 
 ```
 # kubectl get nodes
