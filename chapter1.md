@@ -8,7 +8,7 @@
 
 3 本地mac系统安装GCP SDK，使用 gcloud  命令，将来会使用gcloud compute ssh 命令登陆VM ：
 
-登陆说明： https://cloud.google.com/compute/docs/instances/connecting-to-instance\#standardssh
+登陆说明： [https://cloud.google.com/compute/docs/instances/connecting-to-instance\#standardssh](https://cloud.google.com/compute/docs/instances/connecting-to-instance#standardssh)
 
 4 add new yum repo
 
@@ -196,7 +196,7 @@ Description : Command-line utility for administering a Kubernetes cluster.
 [init] Waiting for the kubelet to boot up the control plane as Static Pods from directory "/etc/kubernetes/manifests"
 [init] This often takes around a minute; or longer if the control plane images have to be pulled.
 [apiclient] All control plane components are healthy after 29.502114 seconds
-[uploadconfig] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
+[uploadconfig] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
 [markmaster] Will mark node kube-master as master by adding a label and a taint
 [markmaster] Master kube-master tainted and labelled with key/value: node-role.kubernetes.io/master=""
 [bootstraptoken] Using token: 8f4968.b94417f5daafbdf1
@@ -231,13 +231,11 @@ To make kubectl work for your non-root user, you might want to run these command
 
 **Note** : I suggest that you need to record this output into your sepcifical files.
 
-### 2 install calico 
+### 2 install calico
 
 ```
 kubectl apply -f https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
 ```
-
-
 
 ### 3 check master node
 
@@ -260,9 +258,9 @@ kube-system   kube-proxy-tsbb2                           1/1       Running   0  
 kube-system   kube-scheduler-kube-master                 1/1       Running   0          4m
 ```
 
-**Note**: kube-dns pod is pending 
+**Note**: kube-dns pod is pending
 
-## Join your node 
+## Join your node
 
 1. ssh your kube-node1 vm instance use gcloud command
 2. Become root\(e.g. sudo su -\)
@@ -275,8 +273,7 @@ kube-system   kube-scheduler-kube-master                 1/1       Running   0  
 
 4. The output should look something like:
 
- 
-   ```
+```
    [kubeadm] WARNING: kubeadm is in beta, please do not use it for production clusters.
    [preflight] Running pre-flight checks
    [preflight] Starting the kubelet service
@@ -295,15 +292,11 @@ kube-system   kube-scheduler-kube-master                 1/1       Running   0  
 
 
    Run 'kubectl get nodes' on the master to see this machine join.
-   ```
-
-
-
-
+```
 
 ## Troubleshooting {#troubleshooting}
 
-  ssh your master node: kube-master to check node status
+ssh your master node: kube-master to check node status
 
 ```
 #kubectl get nodes
@@ -322,13 +315,9 @@ ssh kube-node1 to find reason:
 
 **Note** if  find errors , such as
 
-
-
 ```
 failed to get cgroup stats for "/system.slice/docker.service": failed to get container info for "/system.slice/docker.service": unknown container "/system.slice/docker.service"
 ```
-
-
 
 you need to change /etc/systemd/system/kubelet.service.d/10-kubeadm.conf configfile , add this config to KUBELET\_CGROUP\_ARGS  such as:
 
@@ -337,8 +326,6 @@ Environment="KUBELET_CGROUP_ARGS=--cgroup-driver=systemd --runtime-cgroups=/syst
 ```
 
 then restart kubelet
-
-
 
 Note if find errors ,such as:
 
@@ -355,9 +342,9 @@ Nov 01 07:56:16 kube-node1 kubelet[25103]: W1101 07:56:16.912128   25103 cni.go:
 Nov 01 07:56:16 kube-node1 kubelet[25103]: E1101 07:56:16.912258   25103 kubelet.go:2095] Container runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:docker: network plugin is not ready: cni config uninitialized
 ```
 
-maybe lack cni config\(10-calico.conf  calico-kubeconfig\) in /etc/cni/net.d/ 
+maybe lack cni config\(10-calico.conf  calico-kubeconfig\) in /etc/cni/net.d/
 
-you need copy this two files from kube-master vm install . and maybe you need copy /opt/cni/bin/calico-ipam and calico  then ssh to kube-master vm instance, kube-node1 is ready
+you need copy this two files from kube-master vm install . and maybe you need copy /opt/cni/bin/calico-ipam and /opt/cni/bin/calico to slave node , then ssh to kube-master vm instance, kube-node1 is ready
 
 ```
 # kubectl get nodes
@@ -365,18 +352,6 @@ NAME          STATUS    ROLES     AGE       VERSION
 kube-master   Ready     master    11m       v1.8.1
 kube-node1    Ready     <none>    10m       v1.8.1
 ```
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Tear Down
 
