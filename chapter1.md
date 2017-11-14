@@ -78,7 +78,9 @@ Description : Docker is an open-source engine that automates the deployment of a
 : Make sure that the cgroup driver used by kubelet is the same as the one used by Docker.
 
 ```
-# cat /usr/lib/systemd/system/docker.service
+# 
+
+
 [Unit]
 Description=Docker Application Container Engine
 Documentation=http://docs.docker.com
