@@ -1,4 +1,4 @@
-# 利用 kubeadm 在 Google Cloud Platform  搭建kubernetes 集群
+* [ ] # 利用 kubeadm 在 Google Cloud Platform  搭建kubernetes 集群
 
 ## Create vm instance
 
@@ -31,11 +31,35 @@ login your vm use gcloud command, then change root account
 $ sudo su -
 ```
 
-### 1 Set  IPv4 traffic
+### 1 Set  IPv4 traffic and disable selinux
 
 Set `/proc/sys/net/bridge/bridge-nf-call-iptables`to `1`by running
 
 `sysctl net.bridge.bridge-nf-call-iptables=1`to pass bridged IPv4 traffic to iptables’ chains.
+
+if exec error, please exec:
+
+```
+modprobe br_netfilter
+```
+
+vim /etc/selinux/config to disable selinux
+
+```
+# This file controls the state of SELinux on the system.
+# SELINUX= can take one of these three values:
+#     enforcing - SELinux security policy is enforced.
+#     permissive - SELinux prints warnings instead of enforcing.
+#     disabled - No SELinux policy is loaded.
+SELINUX=disabled
+# SELINUXTYPE= can take one of three two values:
+#     targeted - Targeted processes are protected,
+#     minimum - Modification of targeted policy. Only selected processes are protected. 
+#     mls - Multi Level Security protection.
+SELINUXTYPE=targeted
+```
+
+
 
 ### 2 install docker\(version 1.12\) on your all vm
 
@@ -158,6 +182,8 @@ Description : Command-line utility for administering a Kubernetes cluster.
 
 # yum install kubeadm -y
 ```
+
+## 
 
 ## Initializing Master
 
