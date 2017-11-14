@@ -355,6 +355,8 @@ kube-master   Ready     master    11m       v1.8.1
 kube-node1    Ready     <none>    10m       v1.8.1
 ```
 
+## 
+
 ## Tear Down
 
 To undo what kubeadm did, you should first[drain the node](https://kubernetes.io/docs/user-guide/kubectl/v1.8/#drain)and make sure that the node is empty before shutting it down.
