@@ -59,8 +59,6 @@ SELINUX=disabled
 SELINUXTYPE=targeted
 ```
 
-
-
 ### 2 install docker\(version 1.12\) on your all vm
 
 On each of your machines, install Docker. Version v1.12 is recommended, but v1.11, v1.13 and 17.03 are known to work as well. Versions 17.06+  _might work _, but have not yet been tested and verified by the Kubernetes node team
@@ -287,6 +285,31 @@ kube-system   kube-scheduler-kube-master                 1/1       Running   0  
 ```
 
 **Note**: kube-dns pod is pending
+
+
+
+## Master Isolation
+
+By default, your cluster will not schedule pods on the master for security reasons. If you want to be able to schedule pods on the master, e.g. for a single-machine Kubernetes cluster for development, run:
+
+```
+kubectl taint nodes --all node-role.kubernetes.io/master-
+```
+
+With output looking something like:
+
+```
+node "test-01" untainted
+taint key="dedicated" and effect="" not found.
+taint key="dedicated" and effect="" not found.
+```
+
+This will remove the`node-role.kubernetes.io/master`taint from any nodes that have it, including the master node, meaning that the scheduler will then be able to schedule pods everywhere.
+
+  
+
+
+
 
 ## Join your node
 
