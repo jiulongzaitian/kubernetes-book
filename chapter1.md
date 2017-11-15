@@ -1,6 +1,6 @@
 * [ ] # 利用 kubeadm 在 Google Cloud Platform  搭建kubernetes 集群
 
-## Create vm instance
+## 创建vm实例
 
 1 登陆  [https://console.cloud.google.com](https://console.cloud.google.com) 创建2个VM实例： 分别命名 kube-master1\(master node\), kube-node1 \(compute node\)
 
@@ -286,8 +286,6 @@ kube-system   kube-scheduler-kube-master                 1/1       Running   0  
 
 **Note**: kube-dns pod is pending
 
-
-
 ## Master Isolation
 
 By default, your cluster will not schedule pods on the master for security reasons. If you want to be able to schedule pods on the master, e.g. for a single-machine Kubernetes cluster for development, run:
@@ -305,11 +303,6 @@ taint key="dedicated" and effect="" not found.
 ```
 
 This will remove the`node-role.kubernetes.io/master`taint from any nodes that have it, including the master node, meaning that the scheduler will then be able to schedule pods everywhere.
-
-  
-
-
-
 
 ## Join your node
 
