@@ -1,6 +1,6 @@
 * [x] # 利用 kubeadm 在 Google Cloud Platform  搭建kubernetes 集群
 
-######                                                                                                                                                                                                           张杰
+###### 
 
 ## 创建VM 实例
 
@@ -24,7 +24,7 @@ enabled=1
 gpgcheck=0
 ```
 
-## 安装kubeadm 
+## 安装kubeadm
 
 利用gcloud 命令登陆到每台vm 实例上， 切换到root 账号
 
@@ -33,7 +33,7 @@ gpgcheck=0
 $ sudo su -
 ```
 
-### 1 Set  IPv4 traffic and disable selinux
+### 1 设置  IPv4 traffic and 禁用 selinux
 
 Set `/proc/sys/net/bridge/bridge-nf-call-iptables`to `1`by running
 
@@ -61,9 +61,11 @@ SELINUX=disabled
 SELINUXTYPE=targeted
 ```
 
-### 2 install docker\(version 1.12\) on your all vm
+### 2 安装 docker\(version 1.12\) 
 
 On each of your machines, install Docker. Version v1.12 is recommended, but v1.11, v1.13 and 17.03 are known to work as well. Versions 17.06+  _might work _, but have not yet been tested and verified by the Kubernetes node team
+
+在每台vm机器上安装docker，建议使用docker 1.12版本，但是1.11 和 17.03 版本据说也没问题， docker 17.06 以上版本可能会没问题，但是没有经过kubernetes node 团队的测试和验证。
 
 ```
 # yum info docker
@@ -97,12 +99,14 @@ Description : Docker is an open-source engine that automates the deployment of a
 @ yum install docker -y
 ```
 
-**Note**
+**注意**
 
-: Make sure that the cgroup driver used by kubelet is the same as the one used by Docker.
+确认kubelet 的cgroup driver 和docker 的 配置是一致的。
+
+docker:
 
 ```
-# 
+# cat /usr/lib/systemd/system/docker.service
 
 
 [Unit]
@@ -155,7 +159,35 @@ Please Check:
 
 it must be seem with kubelet config, seem cgroupdirver
 
-### 3 install kubeadm\(version 1.8 \) on your all vm
+kubelet:
+
+```
+cat /etc/systemd/system/kubelet.service.d/10-kubeadm.conf 
+
+[Service]
+Environment="KUBELET_KUBECONFIG_ARGS=--bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf"
+Environment="KUBELET_SYSTEM_PODS_ARGS=--pod-manifest-path=/etc/kubernetes/manifests --allow-privileged=true"
+Environment="KUBELET_NETWORK_ARGS=--network-plugin=cni --cni-conf-dir=/etc/cni/net.d --cni-bin-dir=/opt/cni/bin"
+Environment="KUBELET_DNS_ARGS=--cluster-dns=10.96.0.10 --cluster-domain=cluster.local"
+Environment="KUBELET_AUTHZ_ARGS=--authorization-mode=Webhook --client-ca-file=/etc/kubernetes/pki/ca.crt"
+Environment="KUBELET_CADVISOR_ARGS=--cadvisor-port=0"
+Environment="KUBELET_CGROUP_ARGS=--cgroup-driver=systemd --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice"
+Environment="KUBELET_CERTIFICATE_ARGS=--rotate-certificates=true --cert-dir=/var/lib/kubelet/pki"
+ExecStart=
+ExecStart=/usr/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_SYSTEM_PODS_ARGS $KUBELET_NETWORK_ARGS $KUBELET_DNS_ARGS $KUBELET_AUTHZ_ARGS $KUBELET_CADVISOR_ARGS $KUBELET_CGROUP_ARGS $KUBELET_CERTIFICATE_ARGS $KUBELET_EXTRA_ARGS
+```
+
+Please Check:
+
+```
+--cgroup-driver=systemd 
+```
+
+
+
+### 3 安装 kubeadm\(version 1.8 \) 
+
+在每台vm上都需要安装安装kubeadm
 
 ```
 # yum info kubeadm
@@ -185,16 +217,18 @@ Description : Command-line utility for administering a Kubernetes cluster.
 
 ## 
 
-## Initializing Master
+## 初始化 Master 节点
 
-### 1 use calico network
+### 1 使用 calico network plugin
+
+在这里我们使用calico cni plugin
 
 **Note:**
 
-* In order for Network Policy to work correctly, you need to pass
+* 为了是Network Policy 工作正确，我们需要使用 `pod-network-cidr  参数`
   `--pod-network-cidr=192.168.0.0/16`to kubeadm in
   .
-* Calico works on`amd64`only.
+* Calico 只能工作在`amd64架构下`.
 
 ```
 # kubeadm init --pod-network-cidr=192.168.0.0/16
@@ -253,13 +287,21 @@ as root:
   kubeadm join --token 8f4968.********** {your muster ip}:6443 --discovery-token-ca-cert-hash sha256:2c30233aee03d8141ec1bb23f68932d5b8a7219515620ddf79771f95c413d4de
 ```
 
-To make kubectl work for your non-root user, you might want to run these commands \(which is also a part of the`kubeadm init`output\):`mkdir -p $HOME/.kube sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config sudo chown $(id -u):$(id -g) $HOME/.kube/config`Alternatively, if you are the root user, you could run this:
+为了能够让kubectl 工作在非root用户下，你可能需要使用下面的命令:
+
+`mkdir -p $HOME/.kube `
+
+`sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config`
+
+` sudo chown $(id -u):$(id -g) $HOME/.kube/config`Alternatively, if you are the root user, you could run this:
 
 `export KUBECONFIG=/etc/kubernetes/admin.conf`
 
-**Note** : I suggest that you need to record this output into your sepcifical files.
+**Note** : 建议将kubeadm init 产生的日志保存到特定的一个文件中， 尤其是关于 **kubeadm join **的最后一行，后续加入新的node  加入集群，会需要这个命令.
 
-### 2 install calico
+
+
+### 2 安装 calico
 
 ```
 kubectl apply -f https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
@@ -286,17 +328,19 @@ kube-system   kube-proxy-tsbb2                           1/1       Running   0  
 kube-system   kube-scheduler-kube-master                 1/1       Running   0          4m
 ```
 
-**Note**: kube-dns pod is pending
+**Note**: kube-dns pod 现在是 pending 状态
 
-## Master Isolation
+## Master 隔离
 
-By default, your cluster will not schedule pods on the master for security reasons. If you want to be able to schedule pods on the master, e.g. for a single-machine Kubernetes cluster for development, run:
+默认情况，处于安全原因，你的集群不会将pod节点调度到master 节点，如果你想将这些pod调度到master 节点，你可以执行下面的命令：
 
 ```
 kubectl taint nodes --all node-role.kubernetes.io/master-
 ```
 
-With output looking something like:
+此命令是将特定的nodes 去掉污点
+
+执行完命令后，会有下面的日志输出
 
 ```
 node "test-01" untainted
@@ -304,20 +348,19 @@ taint key="dedicated" and effect="" not found.
 taint key="dedicated" and effect="" not found.
 ```
 
-This will remove the`node-role.kubernetes.io/master`taint from any nodes that have it, including the master node, meaning that the scheduler will then be able to schedule pods everywhere.
+--all 的参数会将所有node的  `node-role.kubernetes.io/master`  污点全部清除，包括master 节点，这就以为这调度器会将pods调度到任何地方，注意：生产环境下尽量不要这样操作。
 
-## Join your node
+## 加入  node 节点
 
 1. ssh your kube-node1 vm instance use gcloud command
 2. Become root\(e.g. sudo su -\)
-3. Run the command that was output by kubeadm init logs  
-   For example:
+3. 在node节点上执行下面的命令: 请查看上面kubeadm init 产生的日志最后一行。
 
    ```
    kubeadm join --token <token> <master-ip>:<master-port> --discovery-token-ca-cert-hash sha256:<hash>
    ```
 
-4. The output should look something like:
+4. 添加成功后会产生类似如下的日志:
 
 ```
    [kubeadm] WARNING: kubeadm is in beta, please do not use it for production clusters.
@@ -340,7 +383,7 @@ This will remove the`node-role.kubernetes.io/master`taint from any nodes that ha
    Run 'kubectl get nodes' on the master to see this machine join.
 ```
 
-## Troubleshooting {#troubleshooting}
+## 问题处理 {#troubleshooting}
 
 ssh your master node: kube-master to check node status
 
@@ -418,5 +461,5 @@ Then, on the node being removed, reset all kubeadm installed state:
 kubeadm reset
 ```
 
-
+kubeadm reset 命令请慎用
 
