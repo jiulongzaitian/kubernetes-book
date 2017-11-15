@@ -1,6 +1,6 @@
 * [ ] # 利用 kubeadm 在 Google Cloud Platform  搭建kubernetes 集群
 
-## 创建vm实例
+## 创建VM 实例
 
 1 登陆  [https://console.cloud.google.com](https://console.cloud.google.com) 创建2个VM实例： 分别命名 kube-master1\(master node\), kube-node1 \(compute node\)
 
