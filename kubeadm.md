@@ -1,4 +1,6 @@
-* [ ] # 利用 kubeadm 在 Google Cloud Platform  搭建kubernetes 集群
+* [x] # 利用 kubeadm 在 Google Cloud Platform  搭建kubernetes 集群
+
+######                                                                                                                                                                                                           张杰
 
 ## 创建VM 实例
 
@@ -10,7 +12,7 @@
 
 登陆说明： [https://cloud.google.com/compute/docs/instances/connecting-to-instance\#standardssh](https://cloud.google.com/compute/docs/instances/connecting-to-instance#standardssh)
 
-4 add new yum repo
+4 增加yum 源
 
 ```
 vim /etc/yum.repos.d/kubernetes.repo 
@@ -22,9 +24,9 @@ enabled=1
 gpgcheck=0
 ```
 
-## Install kubeadm on vm instance
+## 安装kubeadm 
 
-login your vm use gcloud command, then change root account
+利用gcloud 命令登陆到每台vm 实例上， 切换到root 账号
 
 ```
 #gcloud compute ssh {your vm instance name}
