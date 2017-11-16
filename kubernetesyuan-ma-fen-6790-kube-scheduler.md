@@ -11,6 +11,7 @@ Kube-scheduler主要调度框架其实就是输入`pod`，经过一系列Predica
 
 ## 代码简析
 > 注：本文基于kubernetes版本为`GitVersion:"v1.9.0-alpha.0.572+9636522137039d", GitCommit:"9636522137039d48555d2441725133d69805e010"`。截止到本文完成时，kube-scheduler出了全新的Pod优先级和抢占机制，主流程可能会和本文略有出入。 
+
 ### 主启动流程
 
 程序入口在plugin/cmd/kube-scheduler/scheduler.go:
