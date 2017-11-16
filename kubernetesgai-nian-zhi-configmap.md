@@ -1,6 +1,4 @@
-#                                           ConfigMap介绍
-
-
+# ConfigMap介绍
 
 ## ConfigMap的使命
 
@@ -40,6 +38,9 @@ ConfigMap在Pod中的使用支持多种方法，如：
 
 用户和系统的组件都可以在ConfigMap中存储配置数据。
 
-  
+## 创建ConfigMap
+
+
+
 
 
