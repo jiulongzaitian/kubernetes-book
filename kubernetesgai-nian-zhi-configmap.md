@@ -226,5 +226,270 @@ metadata:
   uid: dadce046-d673-11e5-8cd0-68f728db1985
 ```
 
+## ConfigMap在Pod中的使用方式
+
+### 通过ConfigMap设置环境变量
+
+ConfigMap中的值可以通过环境变量的方式在容器中使用，参考如下示例：
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: special-config
+  namespace: default
+data:
+  special.how: very
+  special.type: charm
+```
+
+在容器中引用该ConfigMap的值
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dapi-test-pod
+spec:
+  containers:
+    - name: test-container
+      image: gcr.io/google_containers/busybox
+      command: [ "/bin/sh", "-c", "env" ]
+      env:
+        - name: SPECIAL_LEVEL_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: special-config
+              key: special.how
+        - name: SPECIAL_TYPE_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: special-config
+              key: special.type
+  restartPolicy: Never
+```
+
+当该容器运行时，输出环境变量的值为：
+
+```
+SPECIAL_LEVEL_KEY=very
+SPECIAL_TYPE_KEY=charm
+```
+
+### 通过ConfigMap设置命令行参数
+
+ConfigMap也可以通过kubernetes替换语法`$(VAR_NAME)`来设置容器中的命令或参数的值。如下示例：
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: special-config
+  namespace: default
+data:
+  special.how: very
+  special.type: charm
+```
+
+首先需要在容器的环境变量中引入上边ConfigMap的值，然后通过`$(VAR_NAME)`语法在命令中引用它们。配置如下：
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dapi-test-pod
+spec:
+  containers:
+    - name: test-container
+      image: gcr.io/google_containers/busybox
+      command: [ "/bin/sh", "-c", "echo $(SPECIAL_LEVEL_KEY) $(SPECIAL_TYPE_KEY)" ]
+      env:
+        - name: SPECIAL_LEVEL_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: special-config
+              key: special.how
+        - name: SPECIAL_TYPE_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: special-config
+              key: special.type
+  restartPolicy: Never
+```
+
+当该容器运行时，命令行的输出结果为：
+
+```
+very charm
+```
+
+### 通过volume插件使用ConfigMap
+
+可以通过volume的方式使用ConfigMap中的值，依然采用上面的ConfigMap示例：
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: special-config
+  namespace: default
+data:
+  special.how: very
+  special.type: charm
+```
+
+通过volume的方式引用ConfigMap的值有多种方式，最基本的方法为文件方式，volume中的文件名称为ConfigMap中的key，文件内容为ConfigMap中的value。引用示例如下：
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dapi-test-pod
+spec:
+  containers:
+    - name: test-container
+      image: gcr.io/google_containers/busybox
+      command: [ "/bin/sh", "cat /etc/config/special.how" ]
+      volumeMounts:
+      - name: config-volume
+        mountPath: /etc/config
+  volumes:
+    - name: config-volume
+      configMap:
+        name: special-config
+  restartPolicy: Never
+```
+
+该容器运行时的输出结果为：
+
+```
+very
+```
+
+设置ConfigMap中key的映射路径：
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dapi-test-pod
+spec:
+  containers:
+    - name: test-container
+      image: gcr.io/google_containers/busybox
+      command: [ "/bin/sh", "cat /etc/config/path/to/special-key" ]
+      volumeMounts:
+      - name: config-volume
+        mountPath: /etc/config
+  volumes:
+    - name: config-volume
+      configMap:
+        name: special-config
+        items:
+        - key: special.how
+          path: path/to/special-key
+  restartPolicy: Never
+```
+
+该容器运行时的输出结果为：
+
+```
+very
+```
+
+## 实战演练：配置Redis
+
+下面通过Redis来展示ConfigMap在实际应用中的使用方法。假设我们需要将以下配置作为redis的运行参数：
+
+```
+maxmemory 2mb
+maxmemory-policy allkeys-lru
+```
+
+该配置的文件目录为：`docs/user-guide/configmap/redis/redis-config`，创建ConfigMap：
+
+```
+$ kubectl create configmap example-redis-config --from-file=docs/user-guide/configmap/redis/redis-config
+```
+
+查看该ConfigMap：
+
+```
+$ kubectl get configmap example-redis-config -o yaml
+```
+
+```
+apiVersion: v1
+data:
+  redis-config: |
+    maxmemory 2mb
+    maxmemory-policy allkeys-lru
+kind: ConfigMap
+metadata:
+  creationTimestamp: 2016-03-30T18:14:41Z
+  name: example-redis-config
+  namespace: default
+  resourceVersion: "24686"
+  selfLink: /api/v1/namespaces/default/configmaps/example-redis-config
+  uid: 460a2b6e-f6a3-11e5-8ae5-42010af00002
+```
+
+Redis的配置文件：
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+spec:
+  containers:
+  - name: redis
+    image: kubernetes/redis:v1
+    env:
+    - name: MASTER
+      value: "true"
+    ports:
+    - containerPort: 6379
+    resources:
+      limits:
+        cpu: "0.1"
+    volumeMounts:
+    - mountPath: /redis-master-data
+      name: data
+    - mountPath: /redis-master
+      name: config
+  volumes:
+    - name: data
+      emptyDir: {}
+    - name: config
+      configMap:
+        name: example-redis-config
+        items:
+        - key: redis-config
+          path: redis.conf
+```
+
+该配置中通过volume的方式使用ConfigMap，将ConfigMap：example-redis-config中key：redis-config的值，写入到文件redis.conf中。然后将该文件挂载到目录/redis-master下，redis在启动时会加载该文件。
+
+创建Redis容器：
+
+```
+$ kubectl create -f docs/user-guide/configmap/redis/redis-pod.yaml
+```
+
+使用`kubectl exec`命令进入该容器，并使用`redis-cli`工具检查配置是否正确
+
+```
+$ kubectl exec -it redis redis-cli
+127.0.0.1:6379> CONFIG GET maxmemory
+1) "maxmemory"
+2) "2097152"
+127.0.0.1:6379> CONFIG GET maxmemory-policy
+1) "maxmemory-policy"
+2) "allkeys-lru"
+```
+
+## 使用限制
+
 
 
