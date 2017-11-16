@@ -1,7 +1,8 @@
 ## Pod优先级和抢占
 
-
-作者：李昂 邮箱：liang@haihangyun.com
+```
+                            作者：李昂 邮箱：liang@haihangyun.com
+```
 ---
 #### 目前版本状态：1.8v1alpha1
 Pod在kubernetes1.8及其以后的版本是可以有优先级配置的。优先级表示当前Pod相对于其他Pod的重要性。当不能调度Pod时（如资源不足pod处于pending状态），scheduler会试图抢占（驱逐）较低优先级的Pod，以便调度高优先级的Pod。在未来的Kubernetes版本中优先级也将影响节点上的资源不足时pod的驱逐顺序。
