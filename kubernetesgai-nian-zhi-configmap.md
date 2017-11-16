@@ -1,5 +1,9 @@
 # ConfigMap介绍
 
+```
+苏晓林 xiaol.su@haihangyun.com
+```
+
 ## ConfigMap的使命
 
 在许多应用程序的实际配置中，常常需要通过命令行参数和环境变量进行混合的配置。复杂的配置会严重增加容器的部署和更新的难度、降低容器的可移植性。ConfigMap的出现就是为了解决该问题，通过ConfigMap将配置与镜像内容进行分离，镜像内容中不再包含需要动态变化的配置，全部放在ConfigMap中。从而使容器镜像具备了更好的可移植性，部署和更新也变得更容易。ConfigMap能够存储细粒度的信息（如单个属性）和粗粒度的信息（如整个配置文件或JSON对象），在容器运行时通过ConfigMap API资源将配置注入到容器中。
@@ -519,15 +523,13 @@ ConfigMap的作用范围被限制在namespace中，只有该namespace中的pod�
 
 Kubelet不支持API Server中不存在的Pod使用ConfigMap。
 
-
-
 原文连接：
 
-https://kubernetes-v1-4.github.io/docs/user-guide/configmap/
+[https://kubernetes-v1-4.github.io/docs/user-guide/configmap/](https://kubernetes-v1-4.github.io/docs/user-guide/configmap/)
 
-https://kubernetes.io/docs/tasks/configure-pod-container/configmap/
+[https://kubernetes.io/docs/tasks/configure-pod-container/configmap/](https://kubernetes.io/docs/tasks/configure-pod-container/configmap/)
 
-https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+[https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
 
-https://kubernetes.io/docs/tutorials/configuration/configure-redis-using-configmap/
+[https://kubernetes.io/docs/tutorials/configuration/configure-redis-using-configmap/](https://kubernetes.io/docs/tutorials/configuration/configure-redis-using-configmap/)
 
