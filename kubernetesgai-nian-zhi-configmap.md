@@ -276,6 +276,26 @@ SPECIAL_LEVEL_KEY=very
 SPECIAL_TYPE_KEY=charm
 ```
 
+在Pod中使用`envFrom`引入环境变量（Kubernetes v1.6或更高版本）
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dapi-test-pod
+spec:
+  containers:
+    - name: test-container
+      image: gcr.io/google_containers/busybox
+      command: [ "/bin/sh", "-c", "env" ]
+      envFrom:
+      - configMapRef:
+          name: special-config
+  restartPolicy: Never
+```
+
+该方式中将会把ConfigMap中key的名称作为环境变量的名称，value作为环境变量的值引入。
+
 ### 通过ConfigMap设置命令行参数
 
 ConfigMap也可以通过kubernetes替换语法`$(VAR_NAME)`来设置容器中的命令或参数的值。如下示例：
@@ -491,5 +511,23 @@ $ kubectl exec -it redis redis-cli
 
 ## 使用限制
 
+ConfigMap必须在Pod使用之前创建完成，否则容器将不会启动（除非设置ConfigMap为可选项）。对ConfigMap中不存在的key的引用也会阻止该Pod启动。
 
+当使用`envFrom`引入环境变量时，无效的key将会被跳过，容器能够启动，但无效的key将会记录在事件日志（InvalidVariableNames）中。
+
+ConfigMap的作用范围被限制在namespace中，只有该namespace中的pod才能使用。
+
+Kubelet不支持API Server中不存在的Pod使用ConfigMap。
+
+
+
+原文连接：
+
+https://kubernetes-v1-4.github.io/docs/user-guide/configmap/
+
+https://kubernetes.io/docs/tasks/configure-pod-container/configmap/
+
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+
+https://kubernetes.io/docs/tutorials/configuration/configure-redis-using-configmap/
 
