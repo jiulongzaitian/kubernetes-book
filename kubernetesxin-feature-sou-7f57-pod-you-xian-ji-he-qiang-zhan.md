@@ -1,6 +1,8 @@
-## Pod优先级和抢占 {#pod优先级和抢占}
+##                                              Pod优先级和抢占 {#pod优先级和抢占}
 
 ---
+
+                                                              作者：李昂    邮箱：liang@haihangyun.com
 
 #### 目前版本状态：1.8v1alpha1 {#目前版本状态18v1alpha1}
 
@@ -100,31 +102,31 @@ kind
 
 metadata
 :
-  
+
 name
 : nginx
-  
+
 labels
 :
-    
+
 env
 : test
 
 spec
 :
-  
+
 containers
 :
   - 
 name
 : nginx
-    
+
 image
 : nginx
-    
+
 imagePullPolicy
 : IfNotPresent
-  
+
 priorityClassName
 : high-priority
 ```
