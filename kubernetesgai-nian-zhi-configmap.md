@@ -1,4 +1,4 @@
-# ConfigMap介绍
+#                                           ConfigMap介绍
 
 
 
@@ -26,7 +26,6 @@ data:
     property.1=value-1
     property.2=value-2
     property.3=value-3
-
 ```
 
 在该示例中，data字段包含了细粒度的配置信息example.property.1和example.property.2，也包括粗粒度的信息example.property.file。
@@ -38,4 +37,9 @@ ConfigMap在Pod中的使用支持多种方法，如：
 2.设置容器中的命令行参数
 
 3.设置volume中的配置文件
+
+用户和系统的组件都可以在ConfigMap中存储配置数据。
+
+  
+
 
