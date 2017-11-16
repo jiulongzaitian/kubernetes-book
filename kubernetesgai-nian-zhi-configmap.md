@@ -28,7 +28,7 @@ data:
 
 在该示例中，data字段包含了细粒度的配置信息example.property.1和example.property.2，也包括粗粒度的信息example.property.file。
 
-ConfigMap在Pod中的使用支持多种方法，如：
+ConfigMap在Pod中的使用支持多种方法，如下：
 
 1.设置环境变量的值
 
@@ -40,7 +40,54 @@ ConfigMap在Pod中的使用支持多种方法，如：
 
 ## 创建ConfigMap
 
+创建ConfigMap的命令为`kubectl create configmap`，通过该命令可以直接通过目录、文件或文本值的方式创建ConfigMap。
 
+下面将对三种创建方式进行介绍：
+
+### 目录创建
+
+如下，在目录docs/user-guide/configmap/kubectl/中，存在配置game.properties和ui.properties：
+
+```
+$ ls docs/user-guide/configmap/kubectl/
+game.properties
+ui.properties
+
+$ cat docs/user-guide/configmap/kubectl/game.properties
+enemies=aliens
+lives=3
+enemies.cheat=true
+enemies.cheat.level=noGoodRotten
+secret.code.passphrase=UUDDLRLRBABAS
+secret.code.allowed=true
+secret.code.lives=30
+
+$ cat docs/user-guide/configmap/kubectl/ui.properties
+color.good=purple
+color.bad=yellow
+allow.textmode=true
+how.nice.to.look=fairlyNice
+```
+
+通过目录创建ConfigMap来保存该目录下每个文件的内容：
+
+```
+$ kubectl create configmap game-config --from-file=docs/user-guide/configmap/kubectl
+```
+
+参数--from-file用来指向提供创建ConfigMap数据的目录，该目录中所有文件名称会作为ConfigMap中的key，文件中的内容作为value添加到新创建的ConfigMap中。
+
+查看新创建的ConfigMap的命令:
+
+```
+$ kubectl get configmaps game-config -o yaml
+```
+
+输出结果：
+
+```
+
+```
 
 
 
