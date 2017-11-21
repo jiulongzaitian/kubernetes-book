@@ -1,18 +1,16 @@
-* [x] # 利用 kubeadm 在 Google Cloud Platform  搭建kubernetes 集群
+* [x] # 利用 kubeadm   搭建kubernetes 集群
 
 ###### 
 
+## 
+
 ## 创建VM 实例
 
-1 登陆  [https://console.cloud.google.com](https://console.cloud.google.com) 创建2个VM实例： 分别命名 kube-master1\(master node\), kube-node1 \(compute node\)
+1 创建2个VM实例： 分别命名 kube-master1\(master node\), kube-node1 \(compute node\)
 
 2 操作系统选择centos7 x86-64
 
-3 本地mac系统安装GCP SDK，使用 gcloud  命令，将来会使用gcloud compute ssh 命令登陆VM ：
-
-登陆说明： [https://cloud.google.com/compute/docs/instances/connecting-to-instance\#standardssh](https://cloud.google.com/compute/docs/instances/connecting-to-instance#standardssh)
-
-4 增加yum 源
+3 增加yum 源
 
 ```
 vim /etc/yum.repos.d/kubernetes.repo 
@@ -26,12 +24,9 @@ gpgcheck=0
 
 ## 安装kubeadm
 
-利用gcloud 命令登陆到每台vm 实例上， 切换到root 账号
+登陆到每台vm 实例上， 切换到root 账号
 
-```
-#gcloud compute ssh {your vm instance name}
-$ sudo su -
-```
+
 
 ### 1 设置  IPv4 traffic and 禁用 selinux
 
@@ -61,7 +56,7 @@ SELINUX=disabled
 SELINUXTYPE=targeted
 ```
 
-### 2 安装 docker\(version 1.12\) 
+### 2 安装 docker\(version 1.12\)
 
 On each of your machines, install Docker. Version v1.12 is recommended, but v1.11, v1.13 and 17.03 are known to work as well. Versions 17.06+  _might work _, but have not yet been tested and verified by the Kubernetes node team
 
@@ -180,12 +175,10 @@ ExecStart=/usr/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_SYSTEM_PODS_ARGS $K
 Please Check:
 
 ```
---cgroup-driver=systemd 
+--cgroup-driver=systemd
 ```
 
-
-
-### 3 安装 kubeadm\(version 1.8 \) 
+### 3 安装 kubeadm\(version 1.8 \)
 
 在每台vm上都需要安装安装kubeadm
 
@@ -289,17 +282,15 @@ as root:
 
 为了能够让kubectl 工作在非root用户下，你可能需要使用下面的命令:
 
-`mkdir -p $HOME/.kube `
+`mkdir -p $HOME/.kube`
 
 `sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config`
 
-` sudo chown $(id -u):$(id -g) $HOME/.kube/config`Alternatively, if you are the root user, you could run this:
+`sudo chown $(id -u):$(id -g) $HOME/.kube/config`Alternatively, if you are the root user, you could run this:
 
 `export KUBECONFIG=/etc/kubernetes/admin.conf`
 
 **Note** : 建议将kubeadm init 产生的日志保存到特定的一个文件中， 尤其是关于 **kubeadm join **的最后一行，后续加入新的node  加入集群，会需要这个命令.
-
-
 
 ### 2 安装 calico
 
