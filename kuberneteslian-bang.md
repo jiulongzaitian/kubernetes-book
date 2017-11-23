@@ -1,6 +1,6 @@
 ### 为什么需要联邦
 ```
-作者：李昂 邮箱：liang@haihangyun.com
+                                作者：李昂 邮箱：liang@haihangyun.com
 ```
 ---
 
