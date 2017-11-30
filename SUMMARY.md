@@ -10,13 +10,13 @@
   * [Replica Sets](kubernetes-controllerszhi-garbage-collection/replica-sets.md)
   * [Garbage Collection](kubernetes-controllerszhi-garbage-collection/garbage-collection.md)
 * [centos 部署k8s 集群](centos-bu-shu-k8s-ji-qun.md)
-  * 创建 TLS 证书和秘钥
-  * 创建kubeconfig 文件
-  * 创建高可用etcd集群
-  * 安装kubectl命令行工具
-  * 部署master节点
-  * 部署node节点
-  * 安装kubedns插件
-  * 安装dashboard插件
-  * 安装heapster插件
+  * [创建 TLS 证书和秘钥](centos-bu-shu-k8s-ji-qun/chuang-jian-tls-zheng-shu-he-mi-yao.md)
+  * [创建kubeconfig 文件](centos-bu-shu-k8s-ji-qun/chuang-jian-kubeconfig-wen-jian.md)
+  * [创建高可用etcd集群](centos-bu-shu-k8s-ji-qun/chuang-jian-gao-ke-yong-etcd-ji-qun.md)
+  * [安装kubectl命令行工具](centos-bu-shu-k8s-ji-qun/an-zhuang-kubectl-ming-ling-xing-gong-ju.md)
+  * [部署master节点](centos-bu-shu-k8s-ji-qun/bu-shu-master-jie-dian.md)
+  * [部署node节点](centos-bu-shu-k8s-ji-qun/bu-shu-node-jie-dian.md)
+  * [安装kubedns插件](centos-bu-shu-k8s-ji-qun/an-zhuang-kubedns-cha-jian.md)
+  * [安装dashboard插件](centos-bu-shu-k8s-ji-qun/an-zhuang-dashboard-cha-jian.md)
+  * [安装heapster插件](centos-bu-shu-k8s-ji-qun/an-zhuang-heapster-cha-jian.md)
 
