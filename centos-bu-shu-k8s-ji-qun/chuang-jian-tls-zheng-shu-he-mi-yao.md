@@ -113,7 +113,7 @@ EOF
 创建`ca-csr.json`文件，内容如下：
 
 ```
-cat >> ca-csr.json << EOF
+cat > ca-csr.json << EOF
 {
   "CN": "kubernetes",
   "key": {
@@ -160,7 +160,7 @@ ls ca*
 创建 kubernetes 证书签名请求文件`kubernetes-csr.json`：
 
 ```
-cat >> kubernetes-csr.json << EOF
+cat > kubernetes-csr.json << EOF
 
 {
     "CN": "kubernetes",
@@ -228,7 +228,7 @@ ls kubernetes*
 创建 admin 证书签名请求文件`admin-csr.json`：
 
 ```
-cat >> admin-csr.json << EOF
+cat > admin-csr.json << EOF
 {
   "CN": "admin",
   "hosts": [],
@@ -279,7 +279,7 @@ ls admin*
 创建 kube-proxy 证书签名请求文件`kube-proxy-csr.json`：
 
 ```
-cat >> kube-proxy-csr.json << EOF
+cat > kube-proxy-csr.json << EOF
 {
   "CN": "system:kube-proxy",
   "hosts": [],
