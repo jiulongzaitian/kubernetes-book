@@ -20,7 +20,7 @@ chmod a+x /usr/bin/kube*
 ## 创建 kubectl kubeconfig 文件 {#创建-kubectl-kubeconfig-文件}
 
 ```
-export KUBE_APISERVER="https://10.72.84.160:6443"
+export KUBE_APISERVER="https://${IP}:6443"
 
 # 设置集群参数
 kubectl config set-cluster kubernetes \
@@ -39,8 +39,6 @@ kubectl config set-context kubernetes \
 # 设置默认上下文
 kubectl config use-context kubernetes
 ```
-
-
 
 * `admin.pem`证书 OU 字段值为`system:masters`，`kube-apiserver`预定义的 RoleBinding`cluster-admin`将 Group`system:masters`与 Role`cluster-admin`绑定，该 Role 授予了调用`kube-apiserver`相关 API 的权限；
 
