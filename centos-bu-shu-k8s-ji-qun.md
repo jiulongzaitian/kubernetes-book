@@ -46,20 +46,31 @@
 1. 在node节点上安装docker1.12.5
 2. 关闭所有节点的SELinux （重启）
 3. 准备harbor私有镜像仓库
+4. 每个主机上设置IP的环境变量，
+
+以10.72.84.160 这台主机为例
+
+```
+echo "export IP=10.72.84.160" >> ~/.bashrc
+source ~/.bashrc
+
+```
 
 ## 步骤介绍 {#步骤介绍}
 
 * [创建 TLS 证书和秘钥](/centos-bu-shu-k8s-ji-qun/chuang-jian-tls-zheng-shu-he-mi-yao.md)
 * [安装kubectl命令行工具](https://www.gitbook.com/book/jiulongzaitian/kubernetes/edit#)
 
-*  [创建kubeconfig 文件](/centos-bu-shu-k8s-ji-qun/chuang-jian-kubeconfig-wen-jian.md)
-*  [创建高可用etcd集群](/centos-bu-shu-k8s-ji-qun/chuang-jian-gao-ke-yong-etcd-ji-qun.md)
+* [创建kubeconfig 文件](/centos-bu-shu-k8s-ji-qun/chuang-jian-kubeconfig-wen-jian.md)
 
-*  [部署master节点](/centos-bu-shu-k8s-ji-qun/bu-shu-master-jie-dian.md)
-*  [部署node节点](/centos-bu-shu-k8s-ji-qun/bu-shu-node-jie-dian.md)
+* [创建高可用etcd集群](/centos-bu-shu-k8s-ji-qun/chuang-jian-gao-ke-yong-etcd-ji-qun.md)
+
+* [部署master节点](/centos-bu-shu-k8s-ji-qun/bu-shu-master-jie-dian.md)
+
+* [部署node节点](/centos-bu-shu-k8s-ji-qun/bu-shu-node-jie-dian.md)
 * [ 安装kubedns插件](/centos-bu-shu-k8s-ji-qun/an-zhuang-kubedns-cha-jian.md)
-*  [安装dashboard插件](/centos-bu-shu-k8s-ji-qun/an-zhuang-dashboard-cha-jian.md)
-*  [安装heapster插件](/centos-bu-shu-k8s-ji-qun/an-zhuang-heapster-cha-jian.md)
+* [安装dashboard插件](/centos-bu-shu-k8s-ji-qun/an-zhuang-dashboard-cha-jian.md)
+* [安装heapster插件](/centos-bu-shu-k8s-ji-qun/an-zhuang-heapster-cha-jian.md)
 
 ## 提醒 {#提醒}
 
