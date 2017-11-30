@@ -12,8 +12,6 @@ kubernetes 1.4 开始支持由`kube-apiserver`为客户端生成 TLS 证书的TL
 
 以下操作只需要在master节点上执行，生成的`*.kubeconfig`文件可以直接拷贝到node节点的`/etc/kubernetes`目录下。
 
-
-
 ## 创建 TLS Bootstrapping Token {#创建-tls-bootstrapping-token}
 
 **Token auth file**
@@ -30,7 +28,7 @@ ${BOOTSTRAP_TOKEN},kubelet-bootstrap,10001,"system:kubelet-bootstrap"
 EOF
 ```
 
-**注意：在进行后续操作前请检查`token.csv`文件，确认其中的`${BOOTSTRAP_TOKEN}`环境变量已经被真实的值替换。**
+**注意：在进行后续操作前请检查**`token.csv`**文件，确认其中的**`${BOOTSTRAP_TOKEN}`**环境变量已经被真实的值替换。**
 
 **BOOTSTRAP\_TOKEN**将被写入到 kube-apiserver 使用的 token.csv 文件和 kubelet 使用的`bootstrap.kubeconfig`文件，如果后续重新生成了 BOOTSTRAP\_TOKEN，则需要：
 
@@ -43,7 +41,7 @@ EOF
 
 ```
 cd /etc/kubernetes
-export KUBE_APISERVER="https://10.72.84.160:6443"
+export KUBE_APISERVER="https://${IP}:6443"
 
 # 设置集群参数
 kubectl config set-cluster kubernetes \
@@ -77,7 +75,7 @@ kubectl config use-context default --kubeconfig=bootstrap.kubeconfig
 
 ```
 cd /etc/kubernetes
-export KUBE_APISERVER="https://10.72.84.160:6443"
+export KUBE_APISERVER="https://${IP}:6443"
 
 # 设置集群参数
 kubectl config set-cluster kubernetes \
@@ -105,13 +103,9 @@ kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
 * `--embed-certs`都为`true`，这会将`certificate-authority`、`client-certificate`和`client-key`指向的证书文件内容写入到生成的`kube-proxy.kubeconfig`文件中；
 * `kube-proxy.pem`证书中 CN 为`system:kube-proxy`，`kube-apiserver`预定义的 RoleBinding`cluster-admin`将User`system:kube-proxy`与 Role`system:node-proxier`绑定，该 Role 授予了调用`kube-apiserver`Proxy 相关 API 的权限；
 
-
-
 ## 分发 kubeconfig 文件 {#分发-kubeconfig-文件}
 
 将两个 kubeconfig 文件分发到所有 Node 机器的`/etc/kubernetes/`目录
-
-
 
 ```
 cp bootstrap.kubeconfig kube-proxy.kubeconfig /etc/kubernetes/
