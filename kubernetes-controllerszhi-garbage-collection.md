@@ -75,7 +75,7 @@ metadata:
 * 对象的`deletionTimestamp`字段为已设置
 * 对象的`metadata.finalizers`字段将包含值“foregroundDeletion”
 
-当该对象进入“删除中”状态时，垃圾回收器会删除该对象的所有dependents。当删除所有dependents对象后（对象的 ownerReference.blockOwnerDeletion=true），删除Owner对象。
+当该对象进入“删除中”状态时，垃圾回收器会删除该对象的所有dependents。当删除所有（ownerReference.blockOwnerDeletion=true）的dependents对象后，才能删除Owner对象。
 
 注意，在 “foreground 删除” 模式下，Dependent 只有通过 ownerReference.blockOwnerDeletion 才能阻止删除 Owner 对象。在 Kubernetes 1.7 版本中增加了 admission controller，基于 Owner 对象上的删除权限来控制用户去设置 `blockOwnerDeletion` 的值为 true，未授权的 Dependent 不能够延迟 Owner 对象的删除。
 
@@ -128,9 +128,7 @@ kubectl delete replicaset my-repset --cascade=false
 
 ## 关于Deployments的注意事项
 
-当使用级联方式删除Deployments时，必须使用字段`propagationPolicy: Foreground`不仅要删除ReplicaSets，还要删除它们的Pods。如果为设置`propagationPolicy`字段，只会删除ReplicaSets，Pods将变为孤儿对象。更多信息请点击[kubeadm/\#149](https://github.com/kubernetes/kubeadm/issues/149#issuecomment-284766613)。
+当使用级联方式删除Deployments时，必须使用策略`propagationPolicy: Foreground`，不仅要删除创建的ReplicaSets，还要删除它们的Pods。如果未设置`propagationPolicy`字段，只会删除ReplicaSets，Pods将变为孤儿对象。更多信息请点击[kubeadm/\#149](https://github.com/kubernetes/kubeadm/issues/149#issuecomment-284766613)。
 
 原文链接：[https://kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/](https://kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/)
-
-
 
