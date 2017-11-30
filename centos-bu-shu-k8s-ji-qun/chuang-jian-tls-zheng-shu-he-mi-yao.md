@@ -200,7 +200,7 @@ EOF
 
 集群使用，所以上面分别指定了`etcd`集群、`kubernetes master`集群的主机 IP 和`kubernetes`**服务的服务 IP **一般是`kube-apiserver`指定的`service-cluster-ip-range`网段的第一个IP，如 10.254.0.1。
 
-* hosts 中的内容可以为空，即使按照上面的配置，向集群中增加新节点后也不需要重新生成证书。但是我们建议hosts 有对应的ip 和域名
+* hosts 中的内容可以为空，即使按照上面的配置，向集群中增加新节点后也不需要重新生成证书。但是我们建议hosts 里至少要包含etcd 集群的三个ip，因为后面的章节中etcd 集群使用的证书就是此证书
 * 注意node 和master 的ip
 
 **生成 kubernetes 证书和私钥**
@@ -410,7 +410,6 @@ Certificate:
 * 确认`X509v3 Subject Alternative Name`字段的内容和`kubernetes-csr.json`一致；
 * 确认`X509v3 Key Usage、Extended Key Usage`字段的内容和`ca-config.json`中`kubernetes`profile 一致；
 
-  
 使用`cfssl-certinfo`命令
 
 ```
@@ -476,8 +475,6 @@ cfssl-certinfo -cert kubernetes.pem
   "pem": "-----BEGIN CERTIFICATE-----\nMIIEkTCCA3mgAwIBAgIUEXU9BkGjSdPyq1MO6GuAtlnn8/YwDQYJKoZIhvcNAQEL\nBQAwZTELMAkGA1UEBhMCQ04xEDAOBgNVBAgTB0JlaUppbmcxEDAOBgNVBAcTB0Jl\naUppbmcxDDAKBgNVBAoTA2s4czEPMA0GA1UECxMGU3lzdGVtMRMwEQYDVQQDEwpr\ndWJlcm5ldGVzMB4XDTE3MTEzMDAyMzgwMFoXDTI3MTEyODAyMzgwMFowZTELMAkG\nA1UEBhMCQ04xEDAOBgNVBAgTB0JlaUppbmcxEDAOBgNVBAcTB0JlaUppbmcxDDAK\nBgNVBAoTA2s4czEPMA0GA1UECxMGU3lzdGVtMRMwEQYDVQQDEwprdWJlcm5ldGVz\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoBk5pixG9NGMTT0tL6jK\nlwzmehAOF9esnh/BvKfb/vzWjxdvkF+U7neOw5KgXs07FNOZcNLXb/2TU3U5KWWP\nEV/QXULQdY2Wz3OFgWtRz16Vkx6VpleSbTRFKA43TcjFQl1ab2bwoAiRNYyeMEGE\nMF4nn0PDIAMyCIktmtTFvI8ueVoYmtmFdtqo1YYnHnbDtUf4YDcW4H9VWnb7GUze\npa0NXx7mvn9UpZordh6xnCVBRzVRyJrlcXh2iumBhBW7MNpEL54FPPTvxyspfQN1\n+dlUQDSM0GGkG+CAEDJzmbwqgUYP8kFQ8TgAKc8cAWJRGuKhxRxGdstMEJCih2Tr\nOwIDAQABo4IBNzCCATMwDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUF\nBwMBBggrBgEFBQcDAjAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBRg+Z1PqcEa8iba\nP0xdOSEkfoihbjAfBgNVHSMEGDAWgBSapRMYkxaaUhJ2WkqH58l3wx/l8jCBswYD\nVR0RBIGrMIGoggprdWJlcm5ldGVzghJrdWJlcm5ldGVzLmRlZmF1bHSCFmt1YmVy\nbmV0ZXMuZGVmYXVsdC5zdmOCHmt1YmVybmV0ZXMuZGVmYXVsdC5zdmMuY2x1c3Rl\ncoIka3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FshwR/AAABhwQK\nSFSghwQKSFShhwQKSFSihwQKSFSmhwQKSFSnhwQK/gABMA0GCSqGSIb3DQEBCwUA\nA4IBAQCphE3A1Wvz8qEg7/ZalMDvSlRvpEBb4vX5JnaX5NIMv6hDZ/ukBQ2nrrQP\nITmzN1WvpRZdLyqHZAECVEizUukhZLOkDnARPs718nStDK6xuIEXJh6NT8IrF6AZ\nfy1u2+S83lM5nlQxag791HeSClyvAn0ziThExfqk4GIMV+EO6tVJa5pZn7xOHrB0\ndWYtvK1tamvg7wEEu7icVLzYrCxcsTkocOC60LZo4I3IsgG2Vqfye0HDbiypCQwt\nqVgZpEcqN3wR5QaRvJiE/E0GIFzhSbOsQ/IURdCXd+YH4JjTaWWerJiLIS3qKBMV\n06DZid56bZgu6hoM3OEAQjyeTZ+G\n-----END CERTIFICATE-----\n"
 }
 ```
-
-
 
 ## 分发证书 {#分发证书}
 

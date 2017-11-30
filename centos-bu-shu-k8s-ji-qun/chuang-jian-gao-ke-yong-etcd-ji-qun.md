@@ -12,9 +12,7 @@ kuberntes 系统使用 etcd 存储所有数据，本文档介绍部署一个三�
 cp ca.pem kubernetes-key.pem kubernetes.pem /etc/kubernetes/ssl
 ```
 
-
-
-
+* kubernetes 证书的hosts字段列表必须包含etcd 集群的三个集群的IP 否则后续证书会校验失败
 
 
 
