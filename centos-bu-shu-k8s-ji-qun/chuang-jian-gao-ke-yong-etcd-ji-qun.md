@@ -19,9 +19,9 @@ cp ca.pem kubernetes-key.pem kubernetes.pem /etc/kubernetes/ssl
 到`https://github.com/coreos/etcd/releases`页面下载最新版本的二进制文件
 
 ```
-wget https://github.com/coreos/etcd/releases/download/v3.1.5/etcd-v3.1.5-linux-amd64.tar.gz
-tar -xvf etcd-v3.1.5-linux-amd64.tar.gz
-mv etcd-v3.1.5-linux-amd64/etcd* /usr/local/bin
+wget https://github.com/coreos/etcd/releases/download/v3.1.11/etcd-v3.1.11-linux-amd64.tar.gz
+tar -xvf etcd-v3.1.11-linux-amd64.tar.gz
+mv etcd-v3.1.11-linux-amd64/etcd* /usr/local/bin
 ```
 
 ## 创建 etcd 的 systemd unit 文件 {#创建-etcd-的-systemd-unit-文件}
