@@ -130,7 +130,7 @@ kubectl delete replicaset my-repset --cascade=false
 
 当使用级联方式删除Deployments时，必须使用字段`propagationPolicy: Foreground`不仅要删除ReplicaSets，还要删除它们的Pods。如果为设置`propagationPolicy`字段，只会删除ReplicaSets，Pods将变为孤儿对象。更多信息请点击[kubeadm/\#149](https://github.com/kubernetes/kubeadm/issues/149#issuecomment-284766613)。
 
+原文链接：[https://kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/](https://kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/)
 
 
-原文链接：https://kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/
 
