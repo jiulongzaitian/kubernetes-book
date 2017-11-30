@@ -19,4 +19,6 @@
   * [安装kubedns插件](centos-bu-shu-k8s-ji-qun/an-zhuang-kubedns-cha-jian.md)
   * [安装dashboard插件](centos-bu-shu-k8s-ji-qun/an-zhuang-dashboard-cha-jian.md)
   * [安装heapster插件](centos-bu-shu-k8s-ji-qun/an-zhuang-heapster-cha-jian.md)
+* [源码分析](yuan-ma-fen-xi.md)
+  * [kubelet](yuan-ma-fen-xi/scheduler.md)
 
