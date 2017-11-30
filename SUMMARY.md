@@ -9,4 +9,14 @@
 * [Kubernetes-Controllers](kubernetes-controllerszhi-garbage-collection.md)
   * [Replica Sets](kubernetes-controllerszhi-garbage-collection/replica-sets.md)
   * [Garbage Collection](kubernetes-controllerszhi-garbage-collection/garbage-collection.md)
+* [centos 部署k8s 集群](centos-bu-shu-k8s-ji-qun.md)
+  * 创建 TLS 证书和秘钥
+  * 创建kubeconfig 文件
+  * 创建高可用etcd集群
+  * 安装kubectl命令行工具
+  * 部署master节点
+  * 部署node节点
+  * 安装kubedns插件
+  * 安装dashboard插件
+  * 安装heapster插件
 
