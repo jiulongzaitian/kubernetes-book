@@ -14,8 +14,6 @@ cp ca.pem kubernetes-key.pem kubernetes.pem /etc/kubernetes/ssl
 
 * kubernetes 证书的hosts字段列表必须包含etcd 集群的三个集群的IP 否则后续证书会校验失败
 
-
-
 ## 下载二进制文件 {#下载二进制文件}
 
 到`https://github.com/coreos/etcd/releases`页面下载最新版本的二进制文件
@@ -44,21 +42,21 @@ Documentation=https://github.com/coreos
 Type=notify
 WorkingDirectory=/var/lib/etcd/
 EnvironmentFile=-/etc/etcd/etcd.conf
-ExecStart=/usr/local/bin/etcd \
-  --name ${ETCD_NAME} \
-  --cert-file=/etc/kubernetes/ssl/kubernetes.pem \
-  --key-file=/etc/kubernetes/ssl/kubernetes-key.pem \
-  --peer-cert-file=/etc/kubernetes/ssl/kubernetes.pem \
-  --peer-key-file=/etc/kubernetes/ssl/kubernetes-key.pem \
-  --trusted-ca-file=/etc/kubernetes/ssl/ca.pem \
-  --peer-trusted-ca-file=/etc/kubernetes/ssl/ca.pem \
-  --initial-advertise-peer-urls ${ETCD_INITIAL_ADVERTISE_PEER_URLS} \
-  --listen-peer-urls ${ETCD_LISTEN_PEER_URLS} \
-  --listen-client-urls ${ETCD_LISTEN_CLIENT_URLS},https://127.0.0.1:2379 \
-  --advertise-client-urls ${ETCD_ADVERTISE_CLIENT_URLS} \
-  --initial-cluster-token ${ETCD_INITIAL_CLUSTER_TOKEN} \
-  --initial-cluster infra1=https://172.20.0.113:2380,infra2=https://172.20.0.114:2380,infra3=https://172.20.0.115:2380 \
-  --initial-cluster-state new \
+ExecStart=/usr/local/bin/etcd \\
+  --name ${ETCD_NAME} \\
+  --cert-file=/etc/kubernetes/ssl/kubernetes.pem \\
+  --key-file=/etc/kubernetes/ssl/kubernetes-key.pem \\
+  --peer-cert-file=/etc/kubernetes/ssl/kubernetes.pem \\
+  --peer-key-file=/etc/kubernetes/ssl/kubernetes-key.pem \\
+  --trusted-ca-file=/etc/kubernetes/ssl/ca.pem \\
+  --peer-trusted-ca-file=/etc/kubernetes/ssl/ca.pem \\
+  --initial-advertise-peer-urls ${ETCD_INITIAL_ADVERTISE_PEER_URLS} \\
+  --listen-peer-urls ${ETCD_LISTEN_PEER_URLS} \\
+  --listen-client-urls ${ETCD_LISTEN_CLIENT_URLS},https://127.0.0.1:2379 \\
+  --advertise-client-urls ${ETCD_ADVERTISE_CLIENT_URLS} \\
+  --initial-cluster-token ${ETCD_INITIAL_CLUSTER_TOKEN} \\
+  --initial-cluster infra1=https://172.20.0.113:2380,infra2=https://172.20.0.114:2380,infra3=https://172.20.0.115:2380 \\
+  --initial-cluster-state new \\
   --data-dir=${ETCD_DATA_DIR}
 Restart=on-failure
 RestartSec=5
