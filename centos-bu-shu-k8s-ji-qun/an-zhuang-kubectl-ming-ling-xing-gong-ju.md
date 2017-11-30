@@ -5,10 +5,25 @@
 ## 下载 kubectl {#下载-kubectl}
 
 ```
+mkdir ~/sftp
+cd ~/sftp
+
 wget https://dl.k8s.io/v1.6.0/kubernetes-client-linux-amd64.tar.gz
+
 tar -xzvf kubernetes-client-linux-amd64.tar.gz
+
 cp kubernetes/client/bin/kube* /usr/bin/
+
 chmod a+x /usr/bin/kube*
+```
+
+## 创建 kubectl kubeconfig 文件 {#创建-kubectl-kubeconfig-文件}
+
+```
+
+
+
+
 ```
 
 
