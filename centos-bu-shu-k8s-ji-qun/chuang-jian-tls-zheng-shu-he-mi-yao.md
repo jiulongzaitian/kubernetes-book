@@ -41,51 +41,68 @@
 
 
 
+## 安装`CFSSL` {#安装-cfssl}
 
+**方式一：直接使用二进制源码包安装**
 
+```
+wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+chmod +x cfssl_linux-amd64
+mv cfssl_linux-amd64 /usr/local/bin/cfssl
 
+wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+chmod +x cfssljson_linux-amd64
+mv cfssljson_linux-amd64 /usr/local/bin/cfssljson
 
+wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
+chmod +x cfssl-certinfo_linux-amd64
+mv cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
 
+```
 
+**方式二：使用go命令安装**
 
+我们的系统中安装了Go，使用以下命令安装更快捷：
 
+```
+go get -u github.com/cloudflare/cfssl/cmd/...
+ls ${GOPATH}/bin/cfssl*
+#cfssl cfssl-bundle cfssl-certinfo cfssljson cfssl-newkey cfssl-scan
+```
 
+## 创建 CA \(Certificate Authority\) {#创建-ca-certificate-authority}
 
+**创建 CA 配置文件**
 
+```
+mkdir -p /etc/kubernetes/ssl
+cd  /etc/kubernetes/ssl
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+cfssl print-defaults config > config.json
+cfssl print-defaults csr > csr.json
+# 根据config.json文件的格式创建如下的ca-config.json文件
+# 过期时间设置成了 87600h
+cat > ca-config.json <<EOF
+{
+  "signing": {
+    "default": {
+      "expiry": "87600h"
+    },
+    "profiles": {
+      "kubernetes": {
+        "usages": [
+            "signing",
+            "key encipherment",
+            "server auth",
+            "client auth"
+        ],
+        "expiry": "87600h"
+      }
+    }
+  }
+}
+EOF
+```
 
 
 
