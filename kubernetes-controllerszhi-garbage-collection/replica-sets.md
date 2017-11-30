@@ -70,14 +70,14 @@ spec:
 $ kubectl create -f frontend.yaml
 replicaset "frontend" created
 $ kubectl describe rs/frontend
-Name:		frontend
-Namespace:	default
-Selector:	tier=frontend,tier in (frontend)
-Labels:		app=guestbook
-		tier=frontend
-Annotations:	<none>
-Replicas:	3 current / 3 desired
-Pods Status:	3 Running / 0 Waiting / 0 Succeeded / 0 Failed
+Name:        frontend
+Namespace:    default
+Selector:    tier=frontend,tier in (frontend)
+Labels:        app=guestbook
+        tier=frontend
+Annotations:    <none>
+Replicas:    3 current / 3 desired
+Pods Status:    3 Running / 0 Waiting / 0 Succeeded / 0 Failed
 Pod Template:
   Labels:       app=guestbook
                 tier=frontend
@@ -198,5 +198,15 @@ kubectl autoscale rs frontend
 
 Deployment是一个更高层的API对象，可以像`kubectl rolling-update`命令一样，升级其下的ReplicaSets及pods。目前官方推荐使用Deployment来完成滚动升级功能。因为Deploymen是声明式、服务端的，并且有一些附加特性。想查看更多通过Deployment部署无状态应用的信息，请点击[Run a Stateless Application Using a Deployment](https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/)。
 
+##### 直接部署pod
 
+由于直接部署的pod当出现问题时，无法自我恢复，因此除非特殊原因，否则强烈不建议这么干。
+
+##### Job
+
+使用Job来完成那些期望自动终止的pods。
+
+##### DaemonSet
+
+通过DaemonSet可以完成一些与主机相关的功能，如：监控或日志。通过DaemonSet可以实现在每台主机上运行某个pod，并且当新主机加入或之前的主机删除时，自动进行部署或删除。
 
