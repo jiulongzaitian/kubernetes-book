@@ -2,8 +2,6 @@
 
 ---
 
-
-
 kubernetes node 节点包含如下组件：
 
 * Flanneld：需要在service配置文件中增加TLS配置。
@@ -17,8 +15,6 @@ kubernetes node 节点包含如下组件：
 
 以 node : 10.72.84.161  为例
 
-
-
 ## 目录和文件 {#目录和文件}
 
 我们再检查一下三个节点上，经过前几步操作我们已经创建了如下的证书和配置文件。
@@ -30,10 +26,7 @@ ls /etc/kubernetes/ssl
 
 ls /etc/kubernetes/
 #apiserver  bootstrap.kubeconfig  config  controller-manager  kubelet  kube-proxy.kubeconfig  proxy  scheduler  ssl  token.csv
-
 ```
-
-
 
 ## 配置Flanneld {#配置flanneld}
 
@@ -43,7 +36,6 @@ ls /etc/kubernetes/
 
 ```
 yum install -y flannel
-
 ```
 
 service配置文件 `/usr/lib/systemd/system/flanneld.service`
@@ -73,6 +65,28 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 RequiredBy=docker.service
+EOF
+```
+
+`/etc/sysconfig/flanneld`配置文件。
+
+```
+export ENDPOINT1=10.72.84.160
+export ENDPOINT2=10.72.84.161
+export ENDPOINT3=10.72.84.162
+
+cat > /etc/sysconfig/flanneld <<EOF
+# Flanneld configuration options  
+
+# etcd url location.  Point this to the server where etcd runs
+ETCD_ENDPOINTS="https://${ENDPOINT1}:2379,https://${ENDPOINT2}:2379,https://${ENDPOINT3}:2379"
+
+# etcd config key.  This is the configuration key that flannel queries
+# For address range assignment
+ETCD_PREFIX="/kube-centos/network"
+
+# Any additional options that you want to pass
+FLANNEL_OPTIONS="-etcd-cafile=/etc/kubernetes/ssl/ca.pem -etcd-certfile=/etc/kubernetes/ssl/kubernetes.pem -etcd-keyfile=/etc/kubernetes/ssl/kubernetes-key.pem"
 EOF
 ```
 
