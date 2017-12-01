@@ -150,5 +150,19 @@ kubernetes/ssl/kubernetes.pem --etcd-keyfile=/etc/kubernetes/ssl/kubernetes-key.
 EOF
 ```
 
+* 注意ETCD2 和 ETCD3 的值， 相信你可以的
+
+* `--authorization-mode=RBAC`指定在安全端口使用 RBAC 授权模式，拒绝未通过授权的请求；
+
+* kube-scheduler、kube-controller-manager 一般和 kube-apiserver 部署在同一台机器上，它们使用**非安全端口**和 kube-apiserver通信;kubelet、kube-proxy、kubectl 部署在其它 Node 节点上，如果通过**安全端口**访问 kube-apiserver，则必须先通过 TLS 证书认证，再通过 RBAC 授权；
+
+* kube-proxy、kubectl 通过在使用的证书里指定相关的 User、Group 来达到通过 RBAC 授权的目的；
+* 如果使用了 kubelet TLS Boostrap 机制，则不能再指定`--kubelet-certificate-authority`、`--kubelet-client-certificate--kubelet-client-key`选项，否则后续 kube-apiserver 校验 kubelet 证书时出现 ”x509: certificate signed by unknown authority“ 错误；
+* `--admission-control`值必须包含`ServiceAccount`；
+* `--bind-address`不能为`127.0.0.1`；
+* `runtime-config`配置为`rbac.authorization.k8s.io/v1beta1`，表示运行时的apiVersion；
+* `--service-cluster-ip-range`指定 Service Cluster IP 地址段，该地址段不能路由可达；
+* 缺省情况下 kubernetes 对象保存在 etcd`/registry`路径下，可以通过`--etcd-prefix`参数进行调整；
+
 
 
