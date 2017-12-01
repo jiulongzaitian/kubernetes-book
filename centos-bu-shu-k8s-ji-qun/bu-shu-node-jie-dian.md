@@ -111,8 +111,6 @@ etcdctl2 mk ${ETCD_PREFIX}/config '{"Network":"172.30.0.0/16","SubnetLen":24,"Ba
 
 **注**：参考[网络和集群性能测试](https://jimmysong.io/kubernetes-handbook/practice/network-and-cluster-perfermance-test.html)那节，最终我们使用的`host-gw`模式。
 
-
-
 **配置Docker**
 
 ```
@@ -128,7 +126,6 @@ Flannel的[文档](https://github.com/coreos/flannel/blob/master/Documentation/r
 ```
 source /run/flannel/subnet.env
 docker daemon --bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU} &
-
 ```
 
 Systemd users can use`EnvironmentFile`directive in the .service file to pull in`/run/flannel/subnet.env`
@@ -137,7 +134,82 @@ yum 安装的flaaneld ，会有一个 **mk-docker-opts.sh 文件，具体路径�
 
 这个文件是用来`Generate Docker daemon options based on flannel env file`。
 
+**创建  /run/flannel/subnet.env 文件：**
 
+```
+cat >  /run/flannel/subnet.env << EOF
+FLANNEL_NETWORK=172.30.0.0/16
+FLANNEL_SUBNET=172.30.46.1/24
+FLANNEL_MTU=1450
+FLANNEL_IPMASQ=false
+EOF
+```
+
+
+
+执行 /usr/libexec/flannel/mk-docker-opts.sh -i  命令
+
+```
+/usr/libexec/flannel/mk-docker-opts.sh -i 
+
+# 执行完后会生成 /run/docker_opts.env 文件
+
+cat /run/docker_opts.env
+
+#DOCKER_OPT_BIP="--bip=172.30.46.1/24"
+#DOCKER_OPT_IPMASQ="--ip-masq=true"
+#DOCKER_OPT_MTU="--mtu=1450"
+```
+
+
+
+**设置docker0网桥的IP地址**
+
+```
+source /run/flannel/subnet.env
+ifconfig docker0 $FLANNEL_SUBNET
+
+ifconfig docker0
+
+#docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+#        inet 172.30.46.1  netmask 255.255.255.0  broadcast 172.30.46.255
+#        ether 02:42:b7:22:d5:90  txqueuelen 0  (Ethernet)
+#        RX packets 0  bytes 0 (0.0 B)
+#        RX errors 0  dropped 0  overruns 0  frame 0
+#        TX packets 0  bytes 0 (0.0 B)
+#        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+
+
+重启flnanneld
+
+```
+systemctl daemon-reload
+systemctl enable flanneld
+systemctl restart flanneld
+systemctl status flanneld
+```
+
+
+
+同时在 docker 的配置文件 docker.service 中增加环境变量配置：
+
+```
+vim /usr/lib/systemd/system/docker.service
+
+EnvironmentFile=-/run/flannel/docker
+EnvironmentFile=-/run/docker_opts.env
+EnvironmentFile=-/run/flannel/subnet.env
+```
+
+**启动docker**
+
+```
+systemctl daemon-reload
+systemctl enable docker
+systemctl restart docker
+```
 
 
 

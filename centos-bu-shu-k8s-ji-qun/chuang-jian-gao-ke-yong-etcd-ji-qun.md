@@ -132,8 +132,8 @@ systemctl status etcd -l
 因为etcd 加入证书，etcdctl 访问时候需要带证书，因为每次带证书比较麻烦，可以设置alase
 
 ```
-echo "alias etcdctl2='etcdctl --ca-file=/etc/kubernetes/ssl/ca.pem --cert-file=/etc/kubernetes/ssl/kubernetes.pem --key-file=/etc/kubernetes/ssl/kubernetes-key.pem --endpoints=https://${IP}:2379 '" >> ~/.bashrc
-echo "alias etcdctl3='ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem  --endpoints=https://${IP}:2379 '" >> ~/.bashrc
+echo "alias etcdctl2='etcdctl --ca-file=/etc/kubernetes/ssl/ca.pem --cert-file=/etc/kubernetes/ssl/kubernetes.pem --key-file=/etc/kubernetes/ssl/kubernetes-key.pem --endpoints=https://${IP}:2379'" >> ~/.bashrc
+echo "alias etcdctl3='ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem  --endpoints=https://${IP}:2379'" >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -176,4 +176,6 @@ echo L3JlZ2lzdHJ5L25hbWVzcGFjZXMvYXV0b21vZGVs|base64 -d
 
 #/registry/namespaces/automodel
 ```
+
+
 
