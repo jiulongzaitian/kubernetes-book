@@ -30,7 +30,40 @@ mv etcd-v3.1.11-linux-amd64/etcd* /usr/local/bin
 
 ```
 cat > /etc/systemd/system/etcd.service << EOF
+[Unit]
+Description=Etcd Server
+After=network.target
+After=network-online.target
+Wants=network-online.target
+Documentation=https://github.com/coreos
 
+[Service]
+Type=notify
+WorkingDirectory=/var/lib/etcd/
+EnvironmentFile=-/etc/etcd/etcd.conf
+ExecStart=/usr/local/bin/etcd \\
+        --name=${ETCD_NAME} \\
+        --cert-file=${ETCD_CERT_FILE} \\
+        --key-file=${ETCD_KEY_FILE} \\
+        --peer-cert-file=${ETCD_PEER_CERT_FILE} \\
+        --peer-key-file=${ETCD_PEER_KEY_FILE} \\
+        --trusted-ca-file=${ETCD_TRUSTED_CA_FILE} \\
+        --peer-trusted-ca-file=${ETCD_PEER_TRUSTED_CA_FILE} \\
+        --initial-advertise-peer-urls=${ETCD_INITIAL_ADVERTISE_PEER_URLS} \\
+        --listen-peer-urls=${ETCD_LISTEN_PEER_URLS} \\
+        --listen-client-urls=${ETCD_LISTEN_CLIENT_URLS} \\
+        --advertise-client-urls=${ETCD_ADVERTISE_CLIENT_URLS} \\
+        --initial-cluster-token=${ETCD_INITIAL_CLUSTER_TOKEN} \\
+        --initial-cluster=${ETCD_INITIAL_CLUSTER} \\
+        --initial-cluster-state=${ETCD_INITIAL_CLUSTER_STATE} \\
+        --data-dir=${ETCD_DATA_DIR}
+
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
 
 EOF
 ```
