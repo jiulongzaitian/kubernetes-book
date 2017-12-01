@@ -107,5 +107,7 @@ etcdctl2 mk ${ETCD_PREFIX}/config '{"Network":"172.30.0.0/16","SubnetLen":24,"Ba
 #{"Network":"172.30.0.0/16","SubnetLen":24,"Backend":{"Type":"vxlan"}}
 ```
 
+如果你要使用`host-gw`模式，可以直接将vxlan改成`host-gw`即可。
 
+**注**：参考[网络和集群性能测试](https://jimmysong.io/kubernetes-handbook/practice/network-and-cluster-perfermance-test.html)那节，最终我们使用的`host-gw`模式。
 
