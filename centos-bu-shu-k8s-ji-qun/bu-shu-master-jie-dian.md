@@ -200,17 +200,15 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 EnvironmentFile=-/etc/kubernetes/config
 EnvironmentFile=-/etc/kubernetes/controller-manager
 ExecStart=/usr/local/bin/kube-controller-manager \\
-        $KUBE_LOGTOSTDERR \\
-        $KUBE_LOG_LEVEL \\
-        $KUBE_MASTER \\
-        $KUBE_CONTROLLER_MANAGER_ARGS
+        \$KUBE_LOGTOSTDERR \\
+        \$KUBE_LOG_LEVEL \\
+        \$KUBE_MASTER \\
+        \$KUBE_CONTROLLER_MANAGER_ARGS
 Restart=on-failure
 LimitNOFILE=65536
 
 [Install]
 WantedBy=multi-user.target
-
-
 EOF
 ```
 
@@ -229,8 +227,22 @@ KUBE_CONTROLLER_MANAGER_ARGS="--address=127.0.0.1 --service-cluster-ip-range=10.
 * `--service-cluster-ip-range`参数指定 Cluster 中 Service 的CIDR范围，该网络在各 Node 间必须路由不可达，必须和 kube-apiserver 中的参数一致；
 
 * `--cluster-signing-*`指定的证书和私钥文件用来签名为 TLS BootStrap 创建的证书和私钥；
+
 * `--root-ca-file`用来对 kube-apiserver 证书进行校验，**指定该参数后，才会在Pod 容器的 ServiceAccount 中放置该 CA 证书文件**；
 * `--address`值必须为`127.0.0.1`，因为当前 kube-apiserver 期望 scheduler 和 controller-manager 在同一台机器，否则：
+
+```
+kubectl get componentstatuses
+
+```
+
+### 启动 kube-controller-manager {#启动-kube-controller-manager}
+
+```
+systemctl daemon-reload
+systemctl enable kube-controller-manager
+systemctl start kube-controller-manager
+```
 
 
 
