@@ -388,8 +388,6 @@ EOF
 
 kube-proxy配置文件`/etc/kubernetes/proxy`
 
-
-
 ```
 cat > /etc/kubernetes/proxy << EOF
 
@@ -404,27 +402,12 @@ KUBE_PROXY_ARGS="--bind-address=${IP} --hostname-override=${IP} --kubeconfig=/et
 EOF
 ```
 
-`--hostname-override`
+* `--hostname-override`参数值必须与 kubelet 的值一致，否则 kube-proxy 启动后会找不到该 Node，从而不会创建任何 iptables 规则；
 
-* 参数值必须与 kubelet 的值一致，否则 kube-proxy 启动后会找不到该 Node，从而不会创建任何 iptables 规则；
-* kube-proxy 根据
-  `--cluster-cidr`
-  判断集群内部和外部流量，指定
-  `--cluster-cidr`
-  或
-  `--masquerade-all`
-  选项后 kube-proxy 才会对访问 Service IP 的请求做 SNAT；
-* `--kubeconfig`
-  指定的配置文件嵌入了 kube-apiserver 的地址、用户名、证书、秘钥等请求和认证信息；
-* 预定义的 RoleBinding
-  `cluster-admin`
-  将User
-  `system:kube-proxy`
-  与 Role
-  `system:node-proxier`
-  绑定，该 Role 授予了调用
-  `kube-apiserver`
-  Proxy 相关 API 的权限；
+* kube-proxy 根据`--cluster-cidr`判断集群内部和外部流量，指定`--cluster-cidr`或`--masquerade-all`选项后 kube-proxy 才会对访问 Service IP 的请求做 SNAT；
+* `--kubeconfig`指定的配置文件嵌入了 kube-apiserver 的地址、用户名、证书、秘钥等请求和认证信息；
+* 预定义的 RoleBinding`cluster-admin`将User`system:kube-proxy`与 Role`system:node-proxier`绑定，该 Role 授予了调用
+  `kube-apiserver`Proxy 相关 API 的权限；
 
 
 
