@@ -9,13 +9,9 @@ kubernetes master 节点包含的组件：
 * `kube-scheduler   kube-controller-manager  kube-apiserver`三者的功能紧密相关；
 * 同时只能有一个`kube-scheduler`、`kube-controller-manager`进程处于工作状态，如果运行多个，则需要通过选举产生一个 leader；
 
-
-
 **注**：
 
 * 暂时未实现master节点的高可用 （10.72.84.160）
-
-
 
 ## TLS 证书文件 {#tls-证书文件}
 
