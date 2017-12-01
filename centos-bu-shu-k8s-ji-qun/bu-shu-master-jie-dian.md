@@ -225,8 +225,6 @@ cat > /etc/kubernetes/controller-manager << EOF
 KUBE_CONTROLLER_MANAGER_ARGS="--address=127.0.0.1 --service-cluster-ip-range=10.254.0.0/16 --cluster-name=kubernetes --cluster-signing-cert-file=/etc/kubernetes/ssl/ca.pem --cluster-signing-key-file=/etc/kubernetes/ssl/ca-key.pem  --service-account-private-key-file=/etc/kubernetes/ssl/ca-key.pem --root-ca-file=/etc/kubernetes/ssl/ca.pem --leader-elect=true"
 
 EOF
-
-
 ```
 
 * `--service-cluster-ip-range`参数指定 Cluster 中 Service 的CIDR范围，该网络在各 Node 间必须路由不可达，必须和 kube-apiserver 中的参数一致；
@@ -239,6 +237,13 @@ EOF
 
 ```
 kubectl get componentstatuses
+
+#NAME                 STATUS      MESSAGE                                                                                        ERROR
+#controller-manager   Unhealthy   Get http://127.0.0.1:10252/healthz: dial tcp 127.0.0.1:10252: getsockopt: connection refused   
+#scheduler            Unhealthy   Get http://127.0.0.1:10251/healthz: dial tcp 127.0.0.1:10251: getsockopt: connection refused   
+#etcd-0               Healthy     {"health": "true"}                                                                             
+#etcd-1               Healthy     {"health": "true"}                                                                             
+#etcd-2               Healthy     {"health": "true"}   
 ```
 
 ### 启动 kube-controller-manager {#启动-kube-controller-manager}
@@ -248,6 +253,67 @@ systemctl daemon-reload
 systemctl enable kube-controller-manager
 systemctl start kube-controller-manager
 ```
+
+```
+kubectl get componentstatuses 
+
+#NAME                 STATUS      MESSAGE                                                                                        ERROR
+#scheduler            Unhealthy   Get http://127.0.0.1:10251/healthz: dial tcp 127.0.0.1:10251: getsockopt: connection refused   
+#controller-manager   Healthy     ok                                                                                             
+#etcd-0               Healthy     {"health": "true"}                                                                             
+#etcd-1               Healthy     {"health": "true"}                                                                             
+#etcd-2               Healthy     {"health": "true"}      
+```
+
+
+
+## 配置和启动 kube-scheduler {#配置和启动-kube-scheduler}
+
+**创建 kube-scheduler的serivce配置文件**
+
+文件路径`/usr/lib/systemd/system/kube-scheduler.service`。
+
+
+
+```
+cat > /usr/lib/systemd/system/kube-scheduler.service << EOF
+[Unit]
+Description=Kubernetes Scheduler Plugin
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+[Service]
+EnvironmentFile=-/etc/kubernetes/config
+EnvironmentFile=-/etc/kubernetes/scheduler
+ExecStart=/usr/local/bin/kube-scheduler \\
+            \$KUBE_LOGTOSTDERR \\
+            \$KUBE_LOG_LEVEL \\
+            \$KUBE_MASTER \\
+            \$KUBE_SCHEDULER_ARGS
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+
+配置文件`/etc/kubernetes/scheduler`
+
+```
+cat > /etc/kubernetes/scheduler << EOF
+###
+# kubernetes scheduler config
+
+# default config should be adequate
+
+# Add your own!
+KUBE_SCHEDULER_ARGS="--leader-elect=true --address=127.0.0.1"
+EOF
+```
+
+* --address 值必须为127.0.0.1 因为蛋清的kube-apiserver期望scheduler 在同一台机器
+* 
+
 
 
 
