@@ -111,3 +111,33 @@ etcdctl2 mk ${ETCD_PREFIX}/config '{"Network":"172.30.0.0/16","SubnetLen":24,"Ba
 
 **注**：参考[网络和集群性能测试](https://jimmysong.io/kubernetes-handbook/practice/network-and-cluster-perfermance-test.html)那节，最终我们使用的`host-gw`模式。
 
+
+
+**配置Docker**
+
+```
+yum install docker -y
+
+#1.12版本
+```
+
+Flannel的[文档](https://github.com/coreos/flannel/blob/master/Documentation/running.md)中有写**Docker Integration**：
+
+> Docker daemon accepts`--bip`argument to configure the subnet of the docker0 bridge. It also accepts`--mtu`to set the MTU for docker0 and veth devices that it will be creating. Since flannel writes out the acquired subnet and MTU values into a file, the script starting Docker can source in the values and pass them to Docker daemon:
+
+```
+source /run/flannel/subnet.env
+docker daemon --bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU} &
+
+```
+
+Systemd users can use`EnvironmentFile`directive in the .service file to pull in`/run/flannel/subnet.env`
+
+yum 安装的flaaneld ，会有一个 **mk-docker-opts.sh 文件，具体路径是：/usr/libexec/flannel/mk-docker-opts.sh**
+
+这个文件是用来`Generate Docker daemon options based on flannel env file`。
+
+
+
+
+
