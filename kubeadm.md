@@ -1,6 +1,8 @@
 * [x] # 利用 kubeadm   搭建kubernetes 集群
 
-###### 
+                                                                                                     ** 张杰             j.zhang8@haihangyun.com**
+
+---
 
 ## 
 
@@ -25,8 +27,6 @@ gpgcheck=0
 ## 安装kubeadm
 
 登陆到每台vm 实例上， 切换到root 账号
-
-
 
 ### 1 设置  IPv4 traffic and 禁用 selinux
 

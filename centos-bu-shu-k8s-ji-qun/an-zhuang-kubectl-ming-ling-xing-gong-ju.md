@@ -1,5 +1,9 @@
 # 安装kubectl命令行工具 {#安装kubectl命令行工具}
 
+**张杰    j.zhang8@haihangyun.com**
+
+---
+
 本文档介绍下载和配置 kubernetes 集群命令行工具 kubelet 的步骤。
 
 ## 下载 kubectl {#下载-kubectl}

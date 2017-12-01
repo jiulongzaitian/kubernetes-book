@@ -1,4 +1,6 @@
-# [创建 TLS 证书和秘钥](/centos-bu-shu-k8s-ji-qun/chuang-jian-tls-zheng-shu-he-mi-yao.md)centos 部署k8s 集群
+# centos 部署k8s 集群
+
+**张杰    j.zhang8@haihangyun.com**
 
 ---
 
@@ -53,7 +55,6 @@
 ```
 echo "export IP=10.72.84.160" >> ~/.bashrc
 source ~/.bashrc
-
 ```
 
 ## 步骤介绍 {#步骤介绍}
@@ -68,6 +69,7 @@ source ~/.bashrc
 * [部署master节点](/centos-bu-shu-k8s-ji-qun/bu-shu-master-jie-dian.md)
 
 * [部署node节点](/centos-bu-shu-k8s-ji-qun/bu-shu-node-jie-dian.md)
+
 * [ 安装kubedns插件](/centos-bu-shu-k8s-ji-qun/an-zhuang-kubedns-cha-jian.md)
 * [安装dashboard插件](/centos-bu-shu-k8s-ji-qun/an-zhuang-dashboard-cha-jian.md)
 * [安装heapster插件](/centos-bu-shu-k8s-ji-qun/an-zhuang-heapster-cha-jian.md)

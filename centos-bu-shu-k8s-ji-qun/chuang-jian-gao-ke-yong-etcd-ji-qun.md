@@ -1,9 +1,8 @@
-
----
-
----
-
 # 创建高可用 etcd 集群 {#创建高可用-etcd-集群}
+
+**张杰    j.zhang8@haihangyun.com**
+
+---
 
 kuberntes 系统使用 etcd 存储所有数据，本文档介绍部署一个三节点高可用 etcd 集群的步骤，ip：
 

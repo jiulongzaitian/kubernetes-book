@@ -1,5 +1,7 @@
 # 部署node节点 {#部署node节点}
 
+**张杰    j.zhang8@haihangyun.com**
+
 ---
 
 kubernetes node 节点包含如下组件：
