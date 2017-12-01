@@ -74,6 +74,7 @@ EOF
 export ENDPOINT1=10.72.84.160
 export ENDPOINT2=10.72.84.161
 export ENDPOINT3=10.72.84.162
+export ETCD_PREFIX=/kube-centos/network
 
 cat > /etc/sysconfig/flanneld <<EOF
 # Flanneld configuration options  
@@ -83,12 +84,28 @@ ETCD_ENDPOINTS="https://${ENDPOINT1}:2379,https://${ENDPOINT2}:2379,https://${EN
 
 # etcd config key.  This is the configuration key that flannel queries
 # For address range assignment
-ETCD_PREFIX="/kube-centos/network"
+ETCD_PREFIX="\${ETCD_PREFIX}"
 
 # Any additional options that you want to pass
 FLANNEL_OPTIONS="-etcd-cafile=/etc/kubernetes/ssl/ca.pem -etcd-certfile=/etc/kubernetes/ssl/kubernetes.pem -etcd-keyfile=/etc/kubernetes/ssl/kubernetes-key.pem"
 EOF
 ```
+
+**注意**：ENDPOINT1 ENDPOINT2 ENDPOINT3这三个环境变量，相信你可以的
+
+
+
+在FLANNEL\_OPTIONS中增加TLS的配置。
+
+**在etcd中创建网络配置**
+
+执行下面的命令为docker分配IP地址段。 用etcd V2
+
+```
+
+```
+
+
 
 
 
