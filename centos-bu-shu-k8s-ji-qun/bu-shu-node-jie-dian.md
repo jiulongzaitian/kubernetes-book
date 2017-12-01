@@ -100,7 +100,7 @@ EOF
 执行下面的命令为docker分配IP地址段。 用etcd V2
 
 ```
-
+etcdctl2
 ```
 
 
