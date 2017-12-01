@@ -77,5 +77,36 @@ WantedBy=multi-user.target
 EOF
 ```
 
+`/etc/kubernetes/config `文件的内容为
+
+```
+cat > /etc/kubernetes/config << EOF
+
+# kubernetes system config
+#
+# The following values are used to configure various aspects of all
+# kubernetes services, including
+#
+#   kube-apiserver.service
+#   kube-controller-manager.service
+#   kube-scheduler.service
+#   kubelet.service
+#   kube-proxy.service
+# logging to stderr means we get it in the systemd journal
+KUBE_LOGTOSTDERR="--logtostderr=true"
+
+# journal message level,  如果想调试可以设置为8 
+KUBE_LOG_LEVEL="--v=0"
+
+# Should this cluster be allowed to run privileged docker containers
+KUBE_ALLOW_PRIV="--allow-privileged=true"
+
+# How the controller-manager, scheduler, and proxy find the apiserver
+
+KUBE_MASTER="--master=http://${IP}:8080"
+
+EOF
+```
+
 
 
