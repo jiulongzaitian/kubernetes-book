@@ -62,7 +62,6 @@ ExecStart=/usr/local/bin/etcd \\
 Restart=on-failure
 RestartSec=5
 LimitNOFILE=65536
-
 [Install]
 WantedBy=multi-user.target
 
