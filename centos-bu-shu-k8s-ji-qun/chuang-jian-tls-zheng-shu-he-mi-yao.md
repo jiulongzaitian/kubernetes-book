@@ -8,12 +8,9 @@
 
 执行下列步骤前建议你先阅读以下内容：
 
-* [管理集群中的TLS](https://jimmysong.io/kubernetes-handbook/guide/managing-tls-in-a-cluster.html)
-  ：教您如何创建TLS证书
-* [kubelet的认证授权](https://jimmysong.io/kubernetes-handbook/guide/kubelet-authentication-authorization.html)
-  ：向您描述如何通过认证授权来访问 kubelet 的 HTTPS 端点。
-* [TLS bootstrap](https://jimmysong.io/kubernetes-handbook/guide/tls-bootstrapping.html)
-  ：介绍如何为 kubelet 设置 TLS 客户端证书引导（bootstrap）。
+* [管理集群中的TLS](https://jimmysong.io/kubernetes-handbook/guide/managing-tls-in-a-cluster.html)：教您如何创建TLS证书
+* [kubelet的认证授权](https://jimmysong.io/kubernetes-handbook/guide/kubelet-authentication-authorization.html)：向您描述如何通过认证授权来访问 kubelet 的 HTTPS 端点。
+* [TLS bootstrap](https://jimmysong.io/kubernetes-handbook/guide/tls-bootstrapping.html)：介绍如何为 kubelet 设置 TLS 客户端证书引导（bootstrap）。
 
 **注意**：这一步是在安装配置kubernetes的所有步骤中最容易出错也最难于排查问题的一步，而这却刚好是第一步，万事开头难，不要因为这点困难就望而却步。
 
