@@ -100,7 +100,11 @@ EOF
 执行下面的命令为docker分配IP地址段。 用etcd V2
 
 ```
-etcdctl2
+etcdctl2 mkdir ${ETCD_PREFIX}
+etcdctl2 mk ${ETCD_PREFIX}/config '{"Network":"172.30.0.0/16","SubnetLen":24,"Backend":{"Type":"vxlan"}}'
+
+#2017-12-01 13:08:27.672156 I | warning: ignoring ServerName for user-provided CA for backwards compatibility is deprecated
+#{"Network":"172.30.0.0/16","SubnetLen":24,"Backend":{"Type":"vxlan"}}
 ```
 
 
