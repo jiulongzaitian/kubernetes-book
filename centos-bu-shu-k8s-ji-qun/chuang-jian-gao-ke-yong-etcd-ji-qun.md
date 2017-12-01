@@ -78,6 +78,8 @@ EOF
 环境变量配置文件`/etc/etcd/etcd.conf`
 
 ```
+mkdir /etc/etcd
+
 cat > /etc/etcd/etcd.conf << EOF
 ETCD_NAME="160"
 ETCD_CERT_FILE="/etc/kubernetes/ssl/kubernetes.pem"
