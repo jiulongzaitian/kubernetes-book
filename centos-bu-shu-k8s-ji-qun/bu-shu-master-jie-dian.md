@@ -308,14 +308,28 @@ EOF
 ```
 
 * --address 值必须为127.0.0.1 因为蛋清的kube-apiserver期望scheduler 在同一台机器
-* 
-### 启动 kube-scheduler {#启动-kube-scheduler}
+* ### 启动 kube-scheduler {#启动-kube-scheduler}
 
 ```
 systemctl daemon-reload
 systemctl enable kube-scheduler
 systemctl start kube-scheduler
 ```
+
+## 验证 master 节点功能 {#验证-master-节点功能}
+
+```
+kubectl get componentstatuses
+
+#NAME                 STATUS    MESSAGE              ERROR
+#controller-manager   Healthy   ok                   
+#scheduler            Healthy   ok                   
+#etcd-0               Healthy   {"health": "true"}   
+#etcd-1               Healthy   {"health": "true"}   
+#etcd-2               Healthy   {"health": "true"}  
+```
+
+
 
 
 
