@@ -68,8 +68,6 @@ WantedBy=multi-user.target
 EOF
 ```
 
-
-
 指定
 
 * `etcd`的工作目录为`/var/lib/etcd`，数据目录为`/var/lib/etcd`，需在启动服务前创建这两个目录；
@@ -78,8 +76,6 @@ EOF
 * `--initial-cluster-state`值为`new`时，`--name`的参数值必须位于`--initial-cluster`列表中；
 
 环境变量配置文件`/etc/etcd/etcd.conf`
-
-
 
 ```
 cat > /etc/etcd/etcd.conf << EOF
@@ -90,17 +86,16 @@ ETCD_PEER_CERT_FILE="/etc/kubernetes/ssl/kubernetes.pem"
 ETCD_PEER_KEY_FILE="/etc/kubernetes/ssl/kubernetes-key.pem"
 ETCD_TRUSTED_CA_FILE="/etc/kubernetes/ssl/ca.pem" 
 ETCD_PEER_TRUSTED_CA_FILE="/etc/kubernetes/ssl/ca.pem"
-ETCD_INITIAL_ADVERTISE_PEER_URLS="https://10.72.84.160:2380"
-ETCD_LISTEN_PEER_URLS="https://10.72.84.160:2380"
-ETCD_LISTEN_CLIENT_URLS="https://10.72.84.160:2379,https://127.0.0.1:2379"
-ETCD_ADVERTISE_CLIENT_URLS="https://10.72.84.160:2379"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="https://${IP}:2380"
+ETCD_LISTEN_PEER_URLS="https://${IP}:2380"
+ETCD_LISTEN_CLIENT_URLS="https://${IP}:2379,https://127.0.0.1:2379"
+ETCD_ADVERTISE_CLIENT_URLS="https://${IP}:2379"
 ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster1"
-ETCD_INITIAL_CLUSTER=160=https://10.72.84.160:2380,161=https://10.72.84.161:2380,162=https://10.72.84.162:2380"
+ETCD_INITIAL_CLUSTER=160=https://${IP}:2380,161=https://10.72.84.161:2380,162=https://10.72.84.162:2380"
 ETCD_INITIAL_CLUSTER_STATE="new"
 ETCD_DATA_DIR="/var/lib/etcd"
 
 EOF
-
 ```
 
 
