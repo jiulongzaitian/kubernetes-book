@@ -1,0 +1,80 @@
+# 部署node节点 {#部署node节点}
+
+---
+
+
+
+kubernetes node 节点包含如下组件：
+
+* Flanneld：需要在service配置文件中增加TLS配置。
+* Docker1.12.5：docker的安装很简单，这里也不说了。
+* kubelet
+* kube-proxy
+
+下面着重讲`kubelet`和`kube-proxy`的安装，同时还要将之前安装的flannel集成TLS验证。
+
+**注意**：每台 node 上都需要安装 flannel，master 节点上可以不必安装。
+
+以 node : 10.72.84.161  为例
+
+
+
+## 目录和文件 {#目录和文件}
+
+我们再检查一下三个节点上，经过前几步操作我们已经创建了如下的证书和配置文件。
+
+```
+ls /etc/kubernetes/ssl
+#admin-key.pem  admin.pem  ca-key.pem  ca.pem  kube-proxy-key.pem  kube-proxy.pem  kubernetes-key.pem  kubernetes.pem
+
+
+ls /etc/kubernetes/
+#apiserver  bootstrap.kubeconfig  config  controller-manager  kubelet  kube-proxy.kubeconfig  proxy  scheduler  ssl  token.csv
+
+```
+
+
+
+## 配置Flanneld {#配置flanneld}
+
+现在需要在serivce配置文件中增加TLS配置。
+
+直接使用yum安装flanneld即可。
+
+```
+yum install -y flannel
+
+```
+
+service配置文件 `/usr/lib/systemd/system/flanneld.service`
+
+```
+cat > /usr/lib/systemd/system/flanneld.service << EOF
+
+[Unit]
+Description=Flanneld overlay address etcd agent
+After=network.target
+After=network-online.target
+Wants=network-online.target
+After=etcd.service
+Before=docker.service
+
+[Service]
+Type=notify
+EnvironmentFile=/etc/sysconfig/flanneld
+EnvironmentFile=-/etc/sysconfig/docker-network
+ExecStart=/usr/bin/flanneld-start \\
+  -etcd-endpoints=\${ETCD_ENDPOINTS} \\
+  -etcd-prefix=\${ETCD_PREFIX} \\
+  \$FLANNEL_OPTIONS
+ExecStartPost=/usr/libexec/flannel/mk-docker-opts.sh -k DOCKER_NETWORK_OPTIONS -d /run/flannel/docker
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+RequiredBy=docker.service
+EOF
+```
+
+
+
