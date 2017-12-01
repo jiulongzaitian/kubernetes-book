@@ -77,7 +77,7 @@ WantedBy=multi-user.target
 EOF
 ```
 
-`/etc/kubernetes/config `文件的内容为
+`/etc/kubernetes/config`文件的内容为
 
 ```
 cat > /etc/kubernetes/config << EOF
@@ -104,6 +104,48 @@ KUBE_ALLOW_PRIV="--allow-privileged=true"
 # How the controller-manager, scheduler, and proxy find the apiserver
 
 KUBE_MASTER="--master=http://${IP}:8080"
+
+EOF
+```
+
+该配置文件同时被kube-apiserver、kube-controller-manager、kube-scheduler、kubelet、kube-proxy使用。
+
+apiserver配置文件`/etc/kubernetes/apiserver`内容为：
+
+```
+export ETCD2=10.72.84.161
+export ETCD3=10.72.84.162
+
+cat > /etc/kubernetes/apiserver << EOF
+
+###
+## kubernetes system config
+##
+## The following values are used to configure the kube-apiserver
+##
+#
+## The address on the local server to listen to.
+KUBE_API_ADDRESS="--advertise-address=${IP} --bind-address=${IP} --insecure-bind-address=${IP}"
+#
+## The port on the local server to listen on.
+#KUBE_API_PORT="--port=8080"
+#
+## Port minions listen on
+#KUBELET_PORT="--kubelet-port=10250"
+#
+## Comma separated list of nodes in the etcd cluster
+KUBE_ETCD_SERVERS="--etcd-servers=https://${IP}:2379,https://${ETCD2}:2379,https://${ETCD3}:2379"
+#
+## Address range to use for services
+KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range=10.254.0.0/16"
+#
+## default admission control policies
+KUBE_ADMISSION_CONTROL="--admission-control=ServiceAccount,NamespaceLifecycle,NamespaceExists,LimitRanger,ResourceQuota"
+#
+## Add your own!
+KUBE_API_ARGS="--authorization-mode=RBAC --runtime-config=rbac.authorization.k8s.io/v1beta1 --kubelet-https=true --experimental-bootstrap-token-auth --token-auth-file=/etc/kubernetes/token.csv --service-node-port-range=30000-32767 --tls-cert-file=/etc/ku
+bernetes/ssl/kubernetes.pem --tls-private-key-file=/etc/kubernetes/ssl/kubernetes-key.pem --client-ca-file=/etc/kubernetes/ssl/ca.pem --service-account-key-file=/etc/kubernetes/ssl/ca-key.pem --etcd-cafile=/etc/kubernetes/ssl/ca.pem --etcd-certfile=/etc/
+kubernetes/ssl/kubernetes.pem --etcd-keyfile=/etc/kubernetes/ssl/kubernetes-key.pem --enable-swagger-ui=true --apiserver-count=3 --audit-log-maxage=30 --audit-log-maxbackup=3 --audit-log-maxsize=100 --audit-log-path=/var/lib/audit.log --event-ttl=1h"
 
 EOF
 ```
