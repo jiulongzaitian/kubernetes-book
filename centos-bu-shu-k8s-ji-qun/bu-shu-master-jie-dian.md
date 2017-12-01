@@ -150,6 +150,7 @@ ARGS4="--etcd-cafile=/etc/kubernetes/ssl/ca.pem --etcd-certfile=/etc/kubernetes/
 ARGS5="--enable-swagger-ui=true --apiserver-count=3 --audit-log-maxage=30 --audit-log-maxbackup=3 --audit-log-maxsize=100 --audit-log-path=/var/lib/audit.log --event-ttl=1h "
 ARGS6=" "
 
+
 KUBE_API_ARGS="$ARGS1 $ARGS2 $ARGS3 $ARGS4 $ARGS5 $ARGS6"
 EOF
 ```
@@ -165,6 +166,7 @@ EOF
 * 如果使用了 kubelet TLS Boostrap 机制，则不能再指定`--kubelet-certificate-authority`、`--kubelet-client-certificate--kubelet-client-key`选项，否则后续 kube-apiserver 校验 kubelet 证书时出现 ”x509: certificate signed by unknown authority“ 错误；
 
 * `--admission-control`值必须包含`ServiceAccount`；
+
 * `--bind-address`不能为`127.0.0.1`；
 * `runtime-config`配置为`rbac.authorization.k8s.io/v1beta1`，表示运行时的apiVersion；
 * `--service-cluster-ip-range`指定 Service Cluster IP 地址段，该地址段不能路由可达；
