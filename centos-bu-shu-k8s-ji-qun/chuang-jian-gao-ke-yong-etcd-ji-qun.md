@@ -98,8 +98,6 @@ ETCD_DATA_DIR="/var/lib/etcd"
 EOF
 ```
 
-
-
 这是10.72.84.160 节点的配置，如果在其他节点上配置，请注意以下变量：
 
 ```
@@ -109,8 +107,6 @@ ETCD_INITIAL_CLUSTER
 
 注意ETCD\_NAME的值 在 ETCD\_INITIAL\_CLUSTER 的对应关系，相信你的智商 ，你可以的
 
-
-
 ## 启动 etcd 服务 {#启动-etcd-服务}
 
 ```
@@ -118,6 +114,63 @@ systemctl daemon-reload
 systemctl enable etcd
 systemctl start etcd
 systemctl status etcd -l
+```
+
+另外2个etcd节点重复上面的步骤，直到所有机器的 etcd 服务都已启动。
+
+## 验证服务 {#验证服务}
+
+在任一 kubernetes master 机器上执行如下命令：
+
+因为etcd 加入证书，etcdctl 访问时候需要带证书，因为每次带证书比较麻烦，可以设置alase
+
+```
+echo "alias etcdctl2='etcdctl --ca-file=/etc/kubernetes/ssl/ca.pem --cert-file=/etc/kubernetes/ssl/kubernetes.pem --key-file=/etc/kubernetes/ssl/kubernetes-key.pem --endpoints=https://${IP}:2379 '" >> ~/.bashrc
+echo "alias etcdctl3='ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem  --endpoints=https://${IP}:2379 '" >> ~/.bashrc
+source ~/.bashrc 
+```
+
+ 
+
+ETCD V2:
+
+```
+etcdctl2 cluster-health
+
+#2017-12-01 10:27:45.859693 I | warning: ignoring ServerName for user-provided CA for backwards compatibility is deprecated
+#2017-12-01 10:27:45.860945 I | warning: ignoring ServerName for user-provided CA for backwards compatibility is deprecated
+#member c87c90d109e3e1f7 is healthy: got healthy result from https://10.72.84.160:2379
+#cluster is healthy
+```
+
+ETCD V3:
+
+```
+etcdctl3 endpoint health
+
+#2017-12-01 10:29:06.210264 I | warning: ignoring ServerName for user-provided CA for backwards compatibility is deprecated
+#https://10.72.84.160:2379 is healthy: successfully committed proposal: took = 1.837169ms
+```
+
+访问kubernetes 数据：
+
+```
+etcdctl3  get /registry/namespaces/default -w=json|python -m json.tool
+```
+
+
+
+使用`--prefix`可以看到所有的子目录，如查看集群中的namespace：
+
+```
+etcdctl3 get /registry/namespaces --prefix -w=json|python -m json.tool
+```
+
+key的值是经过base64编码，需要解码后才能看到实际值，如
+
+```
+$ echo L3JlZ2lzdHJ5L25hbWVzcGFjZXMvYXV0b21vZGVs|base64 -d
+/registry/namespaces/automodel
 ```
 
 
