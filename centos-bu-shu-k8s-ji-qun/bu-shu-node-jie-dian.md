@@ -219,15 +219,54 @@ etcdctl2 get /kube-centos/network/config
 etcdctl2 get /kube-centos/network/subnets/172.30.14.0-24
 ```
 
-## 安装和配置 kubelet {#安装和配置-kubelet}
+### 下载最新的 kubelet 和 kube-proxy 二进制文件 {#下载最新的-kubelet-和-kube-proxy-二进制文件}
 
-kubelet 启动时向 kube-apiserver 发送 TLS bootstrapping 请求，需要先将 bootstrap token 文件中的 kubelet-bootstrap 用户赋予 system:node-bootstrapper cluster 角色\(role\)， 然后 kubelet 才能有权限创建认证请求\(certificate signing requests\)：
+```
+wget https://dl.k8s.io/v1.6.0/kubernetes-server-linux-amd64.tar.gz
+tar -xzvf kubernetes-server-linux-amd64.tar.gz
+cd kubernetes
+tar -xzvf  kubernetes-src.tar.gz
+cp -r ./server/bin/{kube-proxy,kubelet} /usr/local/bin/
+```
 
 
 
+### 创建 kubelet 的service配置文件 {#创建-kubelet-的service配置文件}
+
+文件位置`/usr/lib/systemd/system/kubelet.service`
 
 
 
+```
+cat > /usr/lib/systemd/system/kubelet.service << EOF
+[Unit]
+Description=Kubernetes Kubelet Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+After=docker.service
+Requires=docker.service
+
+[Service]
+WorkingDirectory=/var/lib/kubelet
+EnvironmentFile=-/etc/kubernetes/config
+EnvironmentFile=-/etc/kubernetes/kubelet
+ExecStart=/usr/local/bin/kubelet \\
+            \$KUBE_LOGTOSTDERR \\
+            \$KUBE_LOG_LEVEL \\
+            \$KUBELET_API_SERVER \\
+            \$KUBELET_ADDRESS \\
+            \$KUBELET_PORT \\
+            \$KUBELET_HOSTNAME \\
+            \$KUBE_ALLOW_PRIV \\
+            \$KUBELET_POD_INFRA_CONTAINER \\
+            \$KUBELET_ARGS
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
+
+EOF
+```
 
 
 
