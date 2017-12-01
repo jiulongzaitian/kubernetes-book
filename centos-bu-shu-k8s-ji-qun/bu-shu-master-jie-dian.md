@@ -243,7 +243,7 @@ kubectl get componentstatuses
 #scheduler            Unhealthy   Get http://127.0.0.1:10251/healthz: dial tcp 127.0.0.1:10251: getsockopt: connection refused   
 #etcd-0               Healthy     {"health": "true"}                                                                             
 #etcd-1               Healthy     {"health": "true"}                                                                             
-#etcd-2               Healthy     {"health": "true"}   
+#etcd-2               Healthy     {"health": "true"}
 ```
 
 ### 启动 kube-controller-manager {#启动-kube-controller-manager}
@@ -262,18 +262,14 @@ kubectl get componentstatuses
 #controller-manager   Healthy     ok                                                                                             
 #etcd-0               Healthy     {"health": "true"}                                                                             
 #etcd-1               Healthy     {"health": "true"}                                                                             
-#etcd-2               Healthy     {"health": "true"}      
+#etcd-2               Healthy     {"health": "true"}
 ```
-
-
 
 ## 配置和启动 kube-scheduler {#配置和启动-kube-scheduler}
 
 **创建 kube-scheduler的serivce配置文件**
 
 文件路径`/usr/lib/systemd/system/kube-scheduler.service`。
-
-
 
 ```
 cat > /usr/lib/systemd/system/kube-scheduler.service << EOF
@@ -313,7 +309,13 @@ EOF
 
 * --address 值必须为127.0.0.1 因为蛋清的kube-apiserver期望scheduler 在同一台机器
 * 
+### 启动 kube-scheduler {#启动-kube-scheduler}
 
+```
+systemctl daemon-reload
+systemctl enable kube-scheduler
+systemctl start kube-scheduler
+```
 
 
 
