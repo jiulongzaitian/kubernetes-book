@@ -119,6 +119,8 @@ etcdctl2 mk ${ETCD_PREFIX}/config '{"Network":"172.30.0.0/16","SubnetLen":24,"Ba
 yum install docker -y
 
 #1.12版本
+
+systemctl restart docker
 ```
 
 Flannel的[文档](https://github.com/coreos/flannel/blob/master/Documentation/running.md)中有写**Docker Integration**：
@@ -410,7 +412,7 @@ EOF
 
 * `--kubeconfig`指定的配置文件嵌入了 kube-apiserver 的地址、用户名、证书、秘钥等请求和认证信息；
 
-* 预定义的 RoleBinding`cluster-admin`将User`system:kube-proxy`与 Role`system:node-proxier`绑定，该 Role 授予了调用
+* 预定义的 RoleBinding`cluster-admin`将User`system:kube-proxy`与 Role`system:node-proxier`绑定，该 Role 授予了调用  
   `kube-apiserver`Proxy 相关 API 的权限；
 
 ### 启动 kube-proxy {#启动-kube-proxy}
