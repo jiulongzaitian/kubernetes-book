@@ -43,21 +43,22 @@ Type=notify
 WorkingDirectory=/var/lib/etcd/
 EnvironmentFile=-/etc/etcd/etcd.conf
 ExecStart=/usr/local/bin/etcd \\
-  --name ${ETCD_NAME} \\
-  --cert-file=/etc/kubernetes/ssl/kubernetes.pem \\
-  --key-file=/etc/kubernetes/ssl/kubernetes-key.pem \\
-  --peer-cert-file=/etc/kubernetes/ssl/kubernetes.pem \\
-  --peer-key-file=/etc/kubernetes/ssl/kubernetes-key.pem \\
-  --trusted-ca-file=/etc/kubernetes/ssl/ca.pem \\
-  --peer-trusted-ca-file=/etc/kubernetes/ssl/ca.pem \\
-  --initial-advertise-peer-urls ${ETCD_INITIAL_ADVERTISE_PEER_URLS} \\
-  --listen-peer-urls ${ETCD_LISTEN_PEER_URLS} \\
-  --listen-client-urls ${ETCD_LISTEN_CLIENT_URLS},https://127.0.0.1:2379 \\
-  --advertise-client-urls ${ETCD_ADVERTISE_CLIENT_URLS} \\
-  --initial-cluster-token ${ETCD_INITIAL_CLUSTER_TOKEN} \\
-  --initial-cluster infra1=https://172.20.0.113:2380,infra2=https://172.20.0.114:2380,infra3=https://172.20.0.115:2380 \\
-  --initial-cluster-state new \\
-  --data-dir=${ETCD_DATA_DIR}
+        --name=${ETCD_NAME} \\
+        --cert-file=${ETCD_CERT_FILE} \\
+        --key-file=${ETCD_KEY_FILE} \\
+        --peer-cert-file=${ETCD_PEER_CERT_FILE} \\
+        --peer-key-file=${ETCD_PEER_KEY_FILE} \\
+        --trusted-ca-file=${ETCD_TRUSTED_CA_FILE} \\
+        --peer-trusted-ca-file=${ETCD_PEER_TRUSTED_CA_FILE} \\
+        --initial-advertise-peer-urls=${ETCD_INITIAL_ADVERTISE_PEER_URLS} \\
+        --listen-peer-urls=${ETCD_LISTEN_PEER_URLS} \\
+        --listen-client-urls=${ETCD_LISTEN_CLIENT_URLS} \\
+        --advertise-client-urls=${ETCD_ADVERTISE_CLIENT_URLS} \\
+        --initial-cluster-token=${ETCD_INITIAL_CLUSTER_TOKEN} \\
+        --initial-cluster=${ETCD_INITIAL_CLUSTER} \\
+        --initial-cluster-state=${ETCD_INITIAL_CLUSTER_STATE} \\
+        --data-dir=${ETCD_DATA_DIR}
+
 Restart=on-failure
 RestartSec=5
 LimitNOFILE=65536
