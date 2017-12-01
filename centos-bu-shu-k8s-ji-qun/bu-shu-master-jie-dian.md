@@ -168,9 +168,11 @@ EOF
 * `--admission-control`值必须包含`ServiceAccount`；
 
 * `--bind-address`不能为`127.0.0.1`；
+
 * `runtime-config`配置为`rbac.authorization.k8s.io/v1beta1`，表示运行时的apiVersion；
 * `--service-cluster-ip-range`指定 Service Cluster IP 地址段，该地址段不能路由可达；
 * 缺省情况下 kubernetes 对象保存在 etcd`/registry`路径下，可以通过`--etcd-prefix`参数进行调整；
+* 生成配置文件后建议检查配置文件
 
 **启动kube-apiserver**
 
