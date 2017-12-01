@@ -70,3 +70,38 @@ EOF
 
 
 
+指定
+
+* `etcd`的工作目录为`/var/lib/etcd`，数据目录为`/var/lib/etcd`，需在启动服务前创建这两个目录；
+* 为了保证通信安全，需要指定 etcd 的公私钥\(cert-file和key-file\)、Peers 通信的公私钥和 CA 证书\(peer-cert-file、peer-key-file、peer-trusted-ca-file\)、客户端的CA证书（trusted-ca-file）；
+* 创建`kubernetes.pem`证书时使用的`kubernetes-csr.json`文件的`hosts`字段**包含所有 etcd 节点的IP**，否则证书校验会出错；
+* `--initial-cluster-state`值为`new`时，`--name`的参数值必须位于`--initial-cluster`列表中；
+
+环境变量配置文件`/etc/etcd/etcd.conf`
+
+
+
+```
+cat > /etc/etcd/etcd.conf << EOF
+ETCD_NAME="160"
+ETCD_CERT_FILE="/etc/kubernetes/ssl/kubernetes.pem"
+ETCD_KEY_FILE="/etc/kubernetes/ssl/kubernetes-key.pem"
+ETCD_PEER_CERT_FILE="/etc/kubernetes/ssl/kubernetes.pem"
+ETCD_PEER_KEY_FILE="/etc/kubernetes/ssl/kubernetes-key.pem"
+ETCD_TRUSTED_CA_FILE="/etc/kubernetes/ssl/ca.pem" 
+ETCD_PEER_TRUSTED_CA_FILE="/etc/kubernetes/ssl/ca.pem"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="https://10.72.84.160:2380"
+ETCD_LISTEN_PEER_URLS="https://10.72.84.160:2380"
+ETCD_LISTEN_CLIENT_URLS="https://10.72.84.160:2379,https://127.0.0.1:2379"
+ETCD_ADVERTISE_CLIENT_URLS="https://10.72.84.160:2379"
+ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster1"
+ETCD_INITIAL_CLUSTER=160=https://10.72.84.160:2380,161=https://10.72.84.161:2380,162=https://10.72.84.162:2380"
+ETCD_INITIAL_CLUSTER_STATE="new"
+ETCD_DATA_DIR="/var/lib/etcd"
+
+EOF
+
+```
+
+
+
