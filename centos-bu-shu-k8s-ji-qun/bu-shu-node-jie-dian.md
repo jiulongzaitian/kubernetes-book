@@ -145,8 +145,6 @@ FLANNEL_IPMASQ=false
 EOF
 ```
 
-
-
 执行 /usr/libexec/flannel/mk-docker-opts.sh -i  命令
 
 ```
@@ -160,8 +158,6 @@ cat /run/docker_opts.env
 #DOCKER_OPT_IPMASQ="--ip-masq=true"
 #DOCKER_OPT_MTU="--mtu=1450"
 ```
-
-
 
 **设置docker0网桥的IP地址**
 
@@ -180,9 +176,7 @@ ifconfig docker0
 #        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
 
-
-
-重启flnanneld
+**重启flnanneld**
 
 ```
 systemctl daemon-reload
@@ -190,8 +184,6 @@ systemctl enable flanneld
 systemctl restart flanneld
 systemctl status flanneld
 ```
-
-
 
 同时在 docker 的配置文件 docker.service 中增加环境变量配置：
 
@@ -210,6 +202,32 @@ systemctl daemon-reload
 systemctl enable docker
 systemctl restart docker
 ```
+
+查询etcd内容
+
+```
+etcdctl2 ls /kube-centos/network/subnets/
+
+#2017-12-01 17:20:52.017335 I | warning: ignoring ServerName for user-provided CA for backwards compatibility is deprecated
+#/kube-centos/network/subnets/172.30.20.0-24
+
+etcdctl2 get /kube-centos/network/config
+#2017-12-01 17:21:37.503071 I | warning: ignoring ServerName for user-provided CA for backwards compatibility is deprecated
+#{"Network":"172.30.0.0/16","SubnetLen":24,"Backend":{"Type":"host-gw"}}
+
+# 若有数据可以查看下面的命令
+etcdctl2 get /kube-centos/network/subnets/172.30.14.0-24
+```
+
+## 安装和配置 kubelet {#安装和配置-kubelet}
+
+kubelet 启动时向 kube-apiserver 发送 TLS bootstrapping 请求，需要先将 bootstrap token 文件中的 kubelet-bootstrap 用户赋予 system:node-bootstrapper cluster 角色\(role\)， 然后 kubelet 才能有权限创建认证请求\(certificate signing requests\)：
+
+
+
+
+
+
 
 
 

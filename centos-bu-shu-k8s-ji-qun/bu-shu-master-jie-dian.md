@@ -326,8 +326,26 @@ kubectl get componentstatuses
 #scheduler            Healthy   ok                   
 #etcd-0               Healthy   {"health": "true"}   
 #etcd-1               Healthy   {"health": "true"}   
-#etcd-2               Healthy   {"health": "true"}  
+#etcd-2               Healthy   {"health": "true"}
 ```
+
+
+
+## 安装和配置 kubelet-bootstrap {#安装和配置-kubelet}
+
+kubelet 启动时向 kube-apiserver 发送 TLS bootstrapping 请求，需要先将 bootstrap token 文件中的 kubelet-bootstrap 用户赋予 system:node-bootstrapper cluster 角色\(role\)， 然后 kubelet 才能有权限创建认证请求\(certificate signing requests\)：
+
+```
+cd /etc/kubernetes
+kubectl create clusterrolebinding kubelet-bootstrap \
+  --clusterrole=system:node-bootstrapper \
+  --user=kubelet-bootstrap
+  
+```
+
+
+
+`--user=kubelet-bootstrap`是在`/etc/kubernetes/token.csv `文件中指定的用户名，同时也写入了`/etc/kubernetes/bootstrap.kubeconfig`文件；
 
 
 
