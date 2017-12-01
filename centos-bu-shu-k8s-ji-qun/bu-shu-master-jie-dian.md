@@ -151,9 +151,6 @@ KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range=10.254.0.0/16"
 KUBE_ADMISSION_CONTROL="--admission-control=ServiceAccount,NamespaceLifecycle,NamespaceExists,LimitRanger,ResourceQuota"
 #
 ## Add your own!
-
-
-
 KUBE_API_ARGS="$ARGS1 $ARGS2 $ARGS3 $ARGS4 $ARGS5 $ARGS6"
 EOF
 ```
@@ -179,6 +176,7 @@ EOF
 * 缺省情况下 kubernetes 对象保存在 etcd`/registry`路径下，可以通过`--etcd-prefix`参数进行调整；
 
 * 生成配置文件后建议检查配置 文件
+
 * **启动kube-apiserver**
 
 ```
