@@ -21,7 +21,7 @@ cp ca.pem kubernetes-key.pem kubernetes.pem /etc/kubernetes/ssl
 ```
 wget https://github.com/coreos/etcd/releases/download/v3.1.11/etcd-v3.1.11-linux-amd64.tar.gz
 tar -xvf etcd-v3.1.11-linux-amd64.tar.gz
-mv etcd-v3.1.11-linux-amd64/etcd* /usr/local/bin
+cp etcd-v3.1.11-linux-amd64/etcd* /usr/local/bin
 ```
 
 ## 创建 etcd 的 systemd unit 文件 {#创建-etcd-的-systemd-unit-文件}
