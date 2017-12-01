@@ -323,8 +323,6 @@ systemctl restart kubelet
 systemctl status kubelet
 ```
 
-
-
 ### 通过 kublet 的 TLS 证书请求 {#通过-kublet-的-tls-证书请求}
 
 kubelet 首次启动时向 kube-apiserver 发送证书签名请求，必须通过后 kubernetes 系统才会将该 Node 加入到集群。
@@ -351,17 +349,42 @@ kubectl certificate approve csr-hbhjz
 kubectl get nodes
 #NAME           STATUS    AGE       VERSION
 #10.72.84.161   Ready     2m        v1.6.0
-
-
 ```
-
-
 
 注意：假如你更新kubernetes的证书，只要没有更新`token.csv`，当重启kubelet后，该node就会自动加入到kuberentes集群中，而不会重新发送`certificaterequest`，也不需要在master节点上执行`kubectl certificate approve`操作。前提是不要删除node节点上的`/etc/kubernetes/ssl/kubelet*`和`/etc/kubernetes/kubelet.kubeconfig`文件。否则kubelet启动时会提示找不到证书而失败。
 
-
-
 ## 配置 kube-proxy {#配置-kube-proxy}
 
-**创建 kube-proxy 的service配置文件**
+**创建 kube-proxy 的service配置文件  **
+
+文件： 文件路径
+
+`/usr/lib/systemd/system/kube-proxy.service`
+
+```
+cat > /usr/lib/systemd/system/kube-proxy.service << EOF
+[Unit]
+Description=Kubernetes Kube-Proxy Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+After=network.target
+
+[Service]
+EnvironmentFile=-/etc/kubernetes/config
+EnvironmentFile=-/etc/kubernetes/proxy
+ExecStart=/usr/local/bin/kube-proxy \\
+        \$KUBE_LOGTOSTDERR \\
+        \$KUBE_LOG_LEVEL \\
+        \$KUBE_MASTER \\
+        \$KUBE_PROXY_ARGS
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+
+
+EOF
+```
+
+
 
