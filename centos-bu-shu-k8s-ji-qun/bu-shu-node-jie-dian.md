@@ -298,8 +298,6 @@ EOF
 
 **注意 KUBELET\_POD\_INFRA\_CONTAINER 变量 这是是infra 镜像的地址**
 
-
-
 * `--address`不能设置为`127.0.0.1`，否则后续 Pods 访问 kubelet 的 API 接口时会失败，因为 Pods 访问的
 
 `127.0.0.1`指向自己而不是 kubelet；
@@ -315,6 +313,15 @@ EOF
   文件，你可以将该文件拷贝到该路径下，并重命名为`kubelet.kubeconfig`，所有node节点可以共用同一个kubelet.kubeconfig文件，这样新添加的节点就不需要再创建CSR请求就能自动添加到kubernetes集群中。同样，在任意能够访问到kubernetes集群的主机上使用`kubectl --kubeconfig`命令操作集群时，只要使用`~/.kube/config`文件就可以通过权限认证，因为这里面已经有认证信息并认为你是admin用户，对集群拥有所有权限。
 * `KUBELET_POD_INFRA_CONTAINER`是基础镜像容器，这里我用的是私有镜像仓库地址，
   **大家部署的时候需要修改为自己的镜像**我上传了一个到时速云上，可以直接`docker pull index.tenxcloud.com/jimmy/pod-infrastructure`下载。
+
+### 启动kublet {#启动kublet}
+
+```
+systemctl daemon-reload
+systemctl enable kubelet
+systemctl restart kubelet
+systemctl status kubelet
+```
 
 
 
