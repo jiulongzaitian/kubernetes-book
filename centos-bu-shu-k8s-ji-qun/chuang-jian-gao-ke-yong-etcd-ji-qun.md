@@ -127,10 +127,8 @@ systemctl status etcd -l
 ```
 echo "alias etcdctl2='etcdctl --ca-file=/etc/kubernetes/ssl/ca.pem --cert-file=/etc/kubernetes/ssl/kubernetes.pem --key-file=/etc/kubernetes/ssl/kubernetes-key.pem --endpoints=https://${IP}:2379 '" >> ~/.bashrc
 echo "alias etcdctl3='ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/ssl/ca.pem   --cert=/etc/kubernetes/ssl/kubernetes.pem   --key=/etc/kubernetes/ssl/kubernetes-key.pem  --endpoints=https://${IP}:2379 '" >> ~/.bashrc
-source ~/.bashrc 
+source ~/.bashrc
 ```
-
- 
 
 ETCD V2:
 
@@ -158,8 +156,6 @@ etcdctl3 endpoint health
 etcdctl3  get /registry/namespaces/default -w=json|python -m json.tool
 ```
 
-
-
 使用`--prefix`可以看到所有的子目录，如查看集群中的namespace：
 
 ```
@@ -169,8 +165,9 @@ etcdctl3 get /registry/namespaces --prefix -w=json|python -m json.tool
 key的值是经过base64编码，需要解码后才能看到实际值，如
 
 ```
-$ echo L3JlZ2lzdHJ5L25hbWVzcGFjZXMvYXV0b21vZGVs|base64 -d
-/registry/namespaces/automodel
+echo L3JlZ2lzdHJ5L25hbWVzcGFjZXMvYXV0b21vZGVs|base64 -d
+
+#/registry/namespaces/automodel
 ```
 
 
