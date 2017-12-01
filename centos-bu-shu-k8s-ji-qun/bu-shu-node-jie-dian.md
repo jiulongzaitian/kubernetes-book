@@ -325,3 +325,43 @@ systemctl status kubelet
 
 
 
+### 通过 kublet 的 TLS 证书请求 {#通过-kublet-的-tls-证书请求}
+
+kubelet 首次启动时向 kube-apiserver 发送证书签名请求，必须通过后 kubernetes 系统才会将该 Node 加入到集群。
+
+查看未授权的 CSR 请求
+
+**首先要登陆到master 节点 去执行**
+
+```
+kubectl get csr
+
+#NAME        AGE       REQUESTOR           CONDITION
+#csr-hbhjz   1m        kubelet-bootstrap   Pending
+
+
+kubectl get nodes
+#NAME           STATUS    AGE       VERSION
+#10.72.84.161   Ready     1m        v1.6.0
+
+# approve 获得到的csr name
+kubectl certificate approve csr-hbhjz
+#certificatesigningrequest "csr-hbhjz" approved
+
+kubectl get nodes
+#NAME           STATUS    AGE       VERSION
+#10.72.84.161   Ready     2m        v1.6.0
+
+
+```
+
+
+
+注意：假如你更新kubernetes的证书，只要没有更新`token.csv`，当重启kubelet后，该node就会自动加入到kuberentes集群中，而不会重新发送`certificaterequest`，也不需要在master节点上执行`kubectl certificate approve`操作。前提是不要删除node节点上的`/etc/kubernetes/ssl/kubelet*`和`/etc/kubernetes/kubelet.kubeconfig`文件。否则kubelet启动时会提示找不到证书而失败。
+
+
+
+## 配置 kube-proxy {#配置-kube-proxy}
+
+**创建 kube-proxy 的service配置文件**
+
