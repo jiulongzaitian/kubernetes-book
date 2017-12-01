@@ -172,16 +172,17 @@ EOF
 * `runtime-config`配置为`rbac.authorization.k8s.io/v1beta1`，表示运行时的apiVersion；
 
 * `--service-cluster-ip-range`指定 Service Cluster IP 地址段，该地址段不能路由可达；
+
 * 缺省情况下 kubernetes 对象保存在 etcd`/registry`路径下，可以通过`--etcd-prefix`参数进行调整；
 * 生成配置文件后建议检查配置 文件
-
+* 
 **启动kube-apiserver**
 
 ```
 systemctl daemon-reload
 systemctl enable kube-apiserver
 systemctl start kube-apiserver
-systemctl status kube-apiserver
+systemctl status kube-apiserver -l
 ```
 
 

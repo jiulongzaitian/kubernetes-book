@@ -1,3 +1,8 @@
+
+---
+
+---
+
 # 创建高可用 etcd 集群 {#创建高可用-etcd-集群}
 
 kuberntes 系统使用 etcd 存储所有数据，本文档介绍部署一个三节点高可用 etcd 集群的步骤，ip：
@@ -171,6 +176,4 @@ echo L3JlZ2lzdHJ5L25hbWVzcGFjZXMvYXV0b21vZGVs|base64 -d
 
 #/registry/namespaces/automodel
 ```
-
-
 
