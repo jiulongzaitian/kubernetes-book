@@ -229,13 +229,9 @@ tar -xzvf  kubernetes-src.tar.gz
 cp -r ./server/bin/{kube-proxy,kubelet} /usr/local/bin/
 ```
 
-
-
 ### 创建 kubelet 的service配置文件 {#创建-kubelet-的service配置文件}
 
 文件位置`/usr/lib/systemd/system/kubelet.service`
-
-
 
 ```
 cat > /usr/lib/systemd/system/kubelet.service << EOF
@@ -265,6 +261,38 @@ Restart=on-failure
 WantedBy=multi-user.target
 
 
+EOF
+```
+
+kubelet的配置文件`/etc/kubernetes/kubelet`。其中的IP地址更改为你的每台node节点的IP地址。
+
+注意：`/var/lib/kubelet`需要手动创建。
+
+```
+mkdir -p /var/lib/kubelet
+
+
+cat >/etc/kubernetes/kubelet  << EOF
+###
+## kubernetes kubelet (minion) config
+#
+## The address for the info server to serve on (set to 0.0.0.0 or "" for all interfaces)
+KUBELET_ADDRESS="--address=${IP}"
+#
+## The port for the info server to serve on
+#KUBELET_PORT="--port=10250"
+#
+## You may leave this blank to use the actual hostname
+KUBELET_HOSTNAME="--hostname-override=${IP}"
+#
+## location of the api-server
+KUBELET_API_SERVER="--api-servers=http://${IP}:8080"
+#
+## pod infrastructure container
+KUBELET_POD_INFRA_CONTAINER="--pod-infra-container-image=pod-infrastructure:rhel7"
+#
+## Add your own!
+KUBELET_ARGS="--cgroup-driver=systemd --cluster-dns=10.254.0.2 --experimental-bootstrap-kubeconfig=/etc/kubernetes/bootstrap.kubeconfig --kubeconfig=/etc/kubernetes/kubelet.kubeconfig --require-kubeconfig --cert-dir=/etc/kubernetes/ssl --cluster-domain=cluster.local --hairpin-mode promiscuous-bridge --serialize-image-pulls=false"
 EOF
 ```
 
