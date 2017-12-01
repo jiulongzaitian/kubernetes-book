@@ -100,3 +100,25 @@ EOF
 
 
 
+这是10.72.84.160 节点的配置，如果在其他节点上配置，请注意以下变量：
+
+```
+ETCD_NAME 
+ETCD_INITIAL_CLUSTER
+```
+
+注意ETCD\_NAME的值 在 ETCD\_INITIAL\_CLUSTER 的对应关系，相信你的智商 ，你可以的
+
+
+
+## 启动 etcd 服务 {#启动-etcd-服务}
+
+```
+systemctl daemon-reload
+systemctl enable etcd
+systemctl start etcd
+systemctl status etcd -l
+```
+
+
+
