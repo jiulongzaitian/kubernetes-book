@@ -8,11 +8,9 @@
 
 下面以创建一个 qa 用户并将其绑定到 qa namespace 为例说明。
 
-
-
 ## 创建 CA 证书和秘钥 {#创建-ca-证书和秘钥}
 
-**创建qa`-csr.json`文件**
+**创建qa**`-csr.json`**文件**
 
 ```
 mkdir -p /etc/kubernetes/ssl/rbac/qa
@@ -93,6 +91,100 @@ kubectl config set-context kubernetes \
 
 # 设置默认上下文
 kubectl config use-context kubernetes --kubeconfig=qa.kubeconfig
+
+# 会在 /etc/kubernetes/ssl/rbac/qa 目录下 生成 qa.kubeconfig 文件
+cat qa.kubeconfig
+
+
+```
+
+
+
+## 创建 资源文件 {#创建-kubeconfig-文件}
+
+## 
+
+```
+cd /etc/kubernetes/ssl/rbac/qa/config
+
+#创建namespace yaml
+cat > ns.yaml << EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: qa
+  
+EOF
+
+# 创建namespace
+kubectl create -f ns.yaml
+
+
+# 创建 resourceQuota 资源限额文件
+cat > resource.yaml << EOF
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: qa-resources
+  namespace: qa 
+spec:
+  hard:
+    pods: "20"
+    requests.cpu: "4000m"
+    requests.memory: 30Gi
+    limits.cpu: "4000m"
+    limits.memory: 30Gi
+EOF
+
+# 20个pods， 4核 ， 30 G
+
+# 创建resourceQuota
+kubectl create -f resource.yaml
+
+
+```
+
+
+
+## 创建 role-binding  {#创建-kubeconfig-文件}
+
+```
+cat > role-binding.yaml << EOF
+# 以下允许用户"qa"从"qa"命名空间
+#  绑定 clusterroles admin  角色
+# 目的是让qa 用户拥有qa namespace 的最高级管理权限
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: admin 
+  namespace: qa 
+subjects:
+- kind: User
+  name: qa 
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole 
+  name: admin 
+  apiGroup: rbac.authorization.k8s.io
+EOF
+
+# 创建 rolebinding
+kubectl create -f role-binding.yaml
+
+
+```
+
+## 分发  qa.kubeconfig 文件 {#创建-kubeconfig-文件}
+
+将qa.kubeconfig 配置文件 和对应的kubectl 二进制 发给需要的用户
+
+使用者需要做以下操作
+
+```
+mkdir -p /root/.kube 
+cp qa.kubeconfig /root/.kube/config
+
+#然后 就可以使用对应的kubectl 进行操作了
 ```
 
 
