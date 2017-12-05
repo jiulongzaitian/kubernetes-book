@@ -8,16 +8,22 @@
 
 下面以创建一个 qa 用户并将其绑定到 qa namespace 为例说明。
 
+```
+# 首先设置环境变量
+
+export USER=qa
+```
+
 ## 创建 CA 证书和秘钥 {#创建-ca-证书和秘钥}
 
 **创建qa**`-csr.json`**文件**
 
 ```
-mkdir -p /etc/kubernetes/ssl/rbac/qa
-cd  /etc/kubernetes/ssl/rbac/qa
-cat > qa-csr.json << EOF
+mkdir -p /etc/kubernetes/ssl/rbac/${USER}
+cd  /etc/kubernetes/ssl/rbac/${USER}
+cat > ${USER}-csr.json << EOF
 {
-  "CN": "qa",
+  "CN": "${USER}",
   "hosts": [],
   "key": {
     "algo": "rsa",
@@ -47,7 +53,7 @@ ca-config.json  ca-key.pem  ca.pem    qa-csr.json
 我们可以设置软连接，将pem 软连接过来
 
 ```
-cd /etc/kubernetes/ssl/rbac/qa
+cd /etc/kubernetes/ssl/rbac/${USER}
 ln -s ../../ca-config.json ca-config.json
 ln -s ../../ca-key.pem ca-key.pem
 ln -s ../../ca.pem ca.pem
@@ -55,13 +61,13 @@ ln -s ../../ca.pem ca.pem
 #创建 config dir
 mkdir -p config
 
-cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes qa-csr.json | cfssljson -bare qa
+cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes ${USER}-csr.json | cfssljson -bare ${USER}
 ```
 
 ## 创建 kubeconfig 文件 {#创建-kubeconfig-文件}
 
 ```
-cd /etc/kubernetes/ssl/rbac/qa
+cd /etc/kubernetes/ssl/rbac/${USER}
 
 # 需要IP 这个环境变量
 if [ "$IP" == "" ]; then echo "NEED IP ENV"; fi
@@ -73,47 +79,43 @@ kubectl config set-cluster kubernetes \
 --certificate-authority=/etc/kubernetes/ssl/ca.pem \
 --embed-certs=true \
 --server=${KUBE_APISERVER} \
---kubeconfig=qa.kubeconfig
+--kubeconfig=${USER}.kubeconfig
 
 # 设置客户端认证参数
-kubectl config set-credentials qa \
---client-certificate=/etc/kubernetes/ssl/rbac/qa/qa.pem \
---client-key=/etc/kubernetes/ssl/rbac/qa/qa-key.pem \
+kubectl config set-credentials ${USER} \
+--client-certificate=/etc/kubernetes/ssl/rbac/${USER}/${USER}.pem \
+--client-key=/etc/kubernetes/ssl/rbac/${USER}/${USER}-key.pem \
 --embed-certs=true \
---kubeconfig=qa.kubeconfig
+--kubeconfig=${USER}.kubeconfig
 
 # 设置上下文参数
 kubectl config set-context kubernetes \
 --cluster=kubernetes \
---user=qa \
---namespace=qa \
---kubeconfig=qa.kubeconfig
+--user=${USER} \
+--namespace=${USER} \
+--kubeconfig=${USER}.kubeconfig
 
 # 设置默认上下文
-kubectl config use-context kubernetes --kubeconfig=qa.kubeconfig
+kubectl config use-context kubernetes --kubeconfig=${USER}.kubeconfig
 
 # 会在 /etc/kubernetes/ssl/rbac/qa 目录下 生成 qa.kubeconfig 文件
-cat qa.kubeconfig
-
-
+cat ${USER}.kubeconfig
 ```
-
-
 
 ## 创建 资源文件 {#创建-kubeconfig-文件}
 
 ## 
 
 ```
-cd /etc/kubernetes/ssl/rbac/qa/config
+cd /etc/kubernetes/ssl/rbac/${USER}/config
 
 #创建namespace yaml
 cat > ns.yaml << EOF
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: qa
-  
+  name: ${USER}
+
 EOF
 
 # 创建namespace
@@ -125,8 +127,8 @@ cat > resource.yaml << EOF
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: qa-resources
-  namespace: qa 
+  name: ${USER}-resources
+  namespace: ${USER} 
 spec:
   hard:
     pods: "20"
@@ -140,27 +142,23 @@ EOF
 
 # 创建resourceQuota
 kubectl create -f resource.yaml
-
-
 ```
 
-
-
-## 创建 role-binding  {#创建-kubeconfig-文件}
+## 创建 role-binding {#创建-kubeconfig-文件}
 
 ```
 cat > role-binding.yaml << EOF
-# 以下允许用户"qa"从"qa"命名空间
+# 以下允许用户"${USER}"从"${USER}"命名空间
 #  绑定 clusterroles admin  角色
-# 目的是让qa 用户拥有qa namespace 的最高级管理权限
+# 目的是让${USER} 用户拥有${USER} namespace 的最高级管理权限
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: admin 
-  namespace: qa 
+  namespace: ${USER} 
 subjects:
 - kind: User
-  name: qa 
+  name: ${USER} 
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole 
@@ -170,8 +168,6 @@ EOF
 
 # 创建 rolebinding
 kubectl create -f role-binding.yaml
-
-
 ```
 
 ## 分发  qa.kubeconfig 文件 {#创建-kubeconfig-文件}
