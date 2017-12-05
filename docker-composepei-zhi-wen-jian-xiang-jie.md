@@ -29,10 +29,6 @@
 
 ### 需要挂载的配置文件 {#section-2}
 
-#### 目录结构 {#section-3}
-
-直接上图:![](https://github.com/sunshineasbefore/resource/blob/master/mysql-replaction-%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84.png?raw=true "目录结构")
-
 ##### 简要说明 {#section-4}
 
 * mysql-master: 存放master配置文件
@@ -51,7 +47,6 @@
   server-id=2
   log-bin=master-bin
   log-bin-index=master-bin.index
-
 ```
 
 #### mysql-s1/mysql-s2的配置 {#mysql-s1mysql-s2}
@@ -63,26 +58,20 @@
   log-bin=s1-bin.log #第一个用s1-bin.log,第二个用s2-bin.log
   sync_binlog=1
   lower_case_table_names=1
-
 ```
 
 #### hosts文件配置 {#hosts}
 
 ```
-127.0.0.1	localhost
-172.18.0.2	m1
-172.18.0.3	s1
-172.18.0.4	s2
-
+127.0.0.1    localhost
+172.18.0.2    m1
+172.18.0.3    s1
+172.18.0.4    s2
 ```
 
 ### docker-compose配置文件和Dockerfile {#docker-composedockerfile}
 
-##### 目录结构 {#section-5}
-
-直接上图:![](https://github.com/sunshineasbefore/resource/blob/master/docker-compose-mysql-%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84.png?raw=true "目录结构")
-
-##### Dockerfile {#dockerfile}
+##### Dockerfile {#section-5}
 
 其实`master s1 s2`的Dockerfile都是一致的,咱就是为了保持一定的扩展性才这么写的. 我们完全可以用`docker-compose`的`image`代替.
 
@@ -99,7 +88,6 @@ ssab work_wjj@163.com
 
 EXPOSE 3306
 CMD ["mysqld"]
-
 ```
 
 ##### docker-compose.yml {#docker-composeyml}
@@ -172,15 +160,12 @@ CMD ["mysqld"]
           - subnet: 172.18.0.0/24
             gateway: 172.18.0.1
 
-
-
 ### run {#run}
 
 在`docker-compose.yml`文件的目录下运行
 
 ```
   docker-compose up -d
-
 ```
 
 别激动,我们现在才只是完成了一半….
@@ -190,14 +175,13 @@ CMD ["mysqld"]
 #### 配置master {#master}
 
 * 进入master的mysql命令行
+
   ```
   docker exec -it m1 /bin/bash
-
   ```
 
   ```
   mysql -u root -p
-
   ```
 
   输入`MYSQL_ROOT_PASSWORD:`的值m1test,进入mysql命令行模式.
@@ -208,7 +192,6 @@ CMD ["mysqld"]
   mysql
   >
    create user repl;
-
   ```
 
 * 给`repl`用户授予slave的权限
@@ -218,14 +201,12 @@ CMD ["mysqld"]
   mysql
   >
    GRANT REPLICATION SLAVE ON *.* TO 'repl'@'172.18.0.%' IDENTIFIED BY 'repl';
-
   ```
 
 * 锁库,不让数据再进行写入动作,这个命令在结束终端会话的时候会自动解锁
 
   ```
   FLUSH TABLES WITH READ LOCK;
-
   ```
 
 * 查看master状态
@@ -234,7 +215,6 @@ CMD ["mysqld"]
   mysql
   >
    show master status;
-
   ```
 
   显示如下:
@@ -246,7 +226,6 @@ CMD ["mysqld"]
   | master-bin.000003 |      636 |              |                  |                   |
   +-------------------+----------+--------------+------------------+-------------------+
   1 row in set (0.00 sec)
-
   ```
 
   记下`master-bin.000003`和`636`一会在slave用.
@@ -254,14 +233,13 @@ CMD ["mysqld"]
 #### 配置slave1 {#slave1}
 
 * 进入s1的mysql命令行
+
   ```
   docker exec -it s1 /bin/bash
-
   ```
 
   ```
   mysql -u root -p
-
   ```
 
 输入`MYSQL_ROOT_PASSWORD:`的值s1test,进入mysql命令行模式.
@@ -272,7 +250,6 @@ CMD ["mysqld"]
   mysql
   >
    change master to master_host='m1',master_port=3306,master_user='repl',master_password='repl',master_log_file='master-bin.000003',master_log_pos=636;
-
   ```
 
 * 启动slave
@@ -281,7 +258,6 @@ CMD ["mysqld"]
   mysql
   >
    start salve;
-
   ```
 
 #### 配置slave2 {#slave2}
@@ -300,7 +276,6 @@ CMD ["mysqld"]
   mysql
   >
    create database mstest;
-
   ```
 
 * 去两台slave上查看是否也有了mstest数据库.
@@ -309,7 +284,6 @@ CMD ["mysqld"]
   mysql
   >
    show databases;
-
   ```
 
   如果显示如下:
@@ -325,7 +299,6 @@ CMD ["mysqld"]
   | sys                |
   +--------------------+
   5 rows in set (0.00 sec)
-
   ```
 
   则证明成功.
@@ -333,7 +306,4 @@ CMD ["mysqld"]
 #### 总结 {#section-7}
 
 通过以上步骤,咱们搭建了一个以`docker-compose`管理的mysql`master-slave`模式的主从复制. 下一步,我们需要进行暴露端口,或者使用`links`属性来让应用或者其他客户端工具能够访问我们的mysql. 再下一步,我们需要使用`mycat`中间件来完成我们的读写分离.
-
-  
-
 
