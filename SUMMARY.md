@@ -1,9 +1,6 @@
 # Summary
 
 * [Introduction](README.md)
-* [use kubeadm  create k8s cluster](kubeadm.md)
-* [Kubernetes概念之ConfigMap](kubernetesgai-nian-zhi-configmap.md)
-* [Kubernetes新Feature搜罗------Pod优先级和抢占](kubernetesxin-feature-sou-7f57-pod-you-xian-ji-he-qiang-zhan.md)
 * [Kubernetes源码分析------kube-scheduler](kubernetesyuan-ma-fen-6790-kube-scheduler.md)
 * [Kubernetes-Controllers](kubernetes-controllerszhi-garbage-collection.md)
   * [Replica Sets](kubernetes-controllerszhi-garbage-collection/replica-sets.md)
@@ -22,12 +19,11 @@
   * [使用kubeadm创建k8s集群](centos-bu-shu-k8s-ji-qun/shi-yong-kubeadm-chuang-jian-k8s-ji-qun.md)
 * [kubernetes源码分析](yuan-ma-fen-xi.md)
   * [kubelet](yuan-ma-fen-xi/scheduler.md)
-  * kube-scheduler
+  * [kube-scheduler](yuan-ma-fen-xi/kube-scheduler.md)
 * [Kubernetes概念](kubernetes-new-feature.md)
   * [ConfigMap](kubernetes-new-feature/configmap.md)
   * [Replica Sets](kubernetes-new-feature/replica-sets.md)
   * [Garbage Collection](kubernetes-new-feature/garbage-collection.md)
   * [Federation](kubernetes-new-feature/kubernetes-federation.md)
   * [Pod Priority and Preemption](kubernetes-new-feature/pod-priority-and-preemption.md)
-* [kubernetes------联邦](kuberneteslian-bang.md)
 
