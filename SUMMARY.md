@@ -24,10 +24,10 @@
   * [kubelet](yuan-ma-fen-xi/scheduler.md)
   * kube-scheduler
 * [Kubernetes概念](kubernetes-new-feature.md)
-  * [Kubernetes Federation](kubernetes-new-feature/kubernetes-federation.md)
   * [ConfigMap](kubernetes-new-feature/configmap.md)
   * [Replica Sets](kubernetes-new-feature/replica-sets.md)
   * [Garbage Collection](kubernetes-new-feature/garbage-collection.md)
+  * [Federation](kubernetes-new-feature/kubernetes-federation.md)
   * [Pod Priority and Preemption](kubernetes-new-feature/pod-priority-and-preemption.md)
 * [kubernetes------联邦](kuberneteslian-bang.md)
 
