@@ -1,9 +1,6 @@
 # Summary
 
 * [Introduction](README.md)
-* [Kubernetes-Controllers](kubernetes-controllerszhi-garbage-collection.md)
-  * [Replica Sets](kubernetes-controllerszhi-garbage-collection/replica-sets.md)
-  * [Garbage Collection](kubernetes-controllerszhi-garbage-collection/garbage-collection.md)
 * [centos 部署k8s 集群](centos-bu-shu-k8s-ji-qun.md)
   * [创建 TLS 证书和秘钥](centos-bu-shu-k8s-ji-qun/chuang-jian-tls-zheng-shu-he-mi-yao.md)
   * [安装kubectl命令行工具](centos-bu-shu-k8s-ji-qun/an-zhuang-kubectl-ming-ling-xing-gong-ju.md)
@@ -19,6 +16,10 @@
 * [kubernetes源码分析](yuan-ma-fen-xi.md)
   * [kubelet简析](yuan-ma-fen-xi/scheduler.md)
     * [kubelet主要功能](yuan-ma-fen-xi/scheduler/kubeletzhu-yao-gong-neng.md)
+    * [kubelet主启动流程](yuan-ma-fen-xi/scheduler/kubeletzhu-qi-dong-liu-cheng.md)
+    * [kubelet核心组件](yuan-ma-fen-xi/scheduler/kubelethe-xin-zu-jian.md)
+    * [kubelet主循环](yuan-ma-fen-xi/scheduler/kubeletzhu-xun-huan.md)
+    * [kubelet总结](yuan-ma-fen-xi/scheduler/kubeletzong-jie.md)
   * [kube-scheduler](yuan-ma-fen-xi/kube-scheduler.md)
 * [Kubernetes概念](kubernetes-new-feature.md)
   * [ConfigMap](kubernetes-new-feature/configmap.md)
