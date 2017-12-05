@@ -1,4 +1,4 @@
-# 部署etcd节点
+# 部署master节点
 
 **张杰    j.zhang8@haihangyun.com**
 
