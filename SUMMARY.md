@@ -36,4 +36,6 @@
 * openshift
 * [harbor](harbor.md)
   * [harbor高可用部署](harbor/harborgao-ke-yong-bu-shu.md)
+* docker-compose
+  * [Docker Compose搭建mysql主从复制](docker-composepei-zhi-wen-jian-xiang-jie.md)
 
