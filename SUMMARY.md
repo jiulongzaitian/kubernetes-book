@@ -1,7 +1,6 @@
 # Summary
 
 * [Introduction](README.md)
-* [Kubernetes源码分析------kube-scheduler](kubernetesyuan-ma-fen-6790-kube-scheduler.md)
 * [Kubernetes-Controllers](kubernetes-controllerszhi-garbage-collection.md)
   * [Replica Sets](kubernetes-controllerszhi-garbage-collection/replica-sets.md)
   * [Garbage Collection](kubernetes-controllerszhi-garbage-collection/garbage-collection.md)
