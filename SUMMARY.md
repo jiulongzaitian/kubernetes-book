@@ -33,4 +33,7 @@
   * [Garbage Collection](kubernetes-new-feature/garbage-collection.md)
   * [Federation](kubernetes-new-feature/kubernetes-federation.md)
   * [Pod Priority and Preemption](kubernetes-new-feature/pod-priority-and-preemption.md)
+* openshift
+* [harbor](harbor.md)
+  * [harbor高可用部署](harbor/harborgao-ke-yong-bu-shu.md)
 
