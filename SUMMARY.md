@@ -20,7 +20,7 @@
     * [kubelet核心组件](yuan-ma-fen-xi/scheduler/kubelethe-xin-zu-jian.md)
     * [kubelet主循环](yuan-ma-fen-xi/scheduler/kubeletzhu-xun-huan.md)
     * [kubelet总结](yuan-ma-fen-xi/scheduler/kubeletzong-jie.md)
-  * [kube-scheduler](yuan-ma-fen-xi/kube-scheduler.md)
+  * [kube-scheduler简析](yuan-ma-fen-xi/kube-scheduler.md)
 * [Kubernetes概念](kubernetes-new-feature.md)
   * [ConfigMap](kubernetes-new-feature/configmap.md)
   * [Replica Sets](kubernetes-new-feature/replica-sets.md)
