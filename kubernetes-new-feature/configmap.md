@@ -1,7 +1,7 @@
 # ConfigMap介绍
 
 ```
-苏晓林 xiaol.su@haihangyun.com
+作者：苏晓林 xiaol.su@haihangyun.com
 ```
 
 ## ConfigMap的使命

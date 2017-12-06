@@ -32,4 +32,5 @@
   * [Garbage Collection](kubernetes-new-feature/garbage-collection.md)
   * [Federation](kubernetes-new-feature/kubernetes-federation.md)
   * [Pod Priority and Preemption](kubernetes-new-feature/pod-priority-and-preemption.md)
+* openshift
 

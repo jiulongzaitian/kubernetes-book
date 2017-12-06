@@ -1,7 +1,9 @@
 ### 为什么需要联邦
+
 ```
-                                作者：李昂 邮箱：liang@haihangyun.com
+作者：李昂 邮箱：liang@haihangyun.com
 ```
+
 ---
 
 联邦可以轻松管理多个群集。它通过提供2个主要构件来实现：
@@ -34,11 +36,15 @@
 Kubernetes集群联盟可以包括运行在不同云提供商（例如Google Cloud，AWS）和本地（例如OpenStack）中的集群。只需在相应的云提供商或本地创建所需的所有群集，然后在联邦API服务器上注册每个群集的API Endpoint和API服务的认证。之后，您的API资源可以跨越不同的集群和云提供商。
 
 ### 设置联邦
+
 ---
+
 为了能够联合多个集群，首先需要建立一个联邦控制平面。按照[联邦设置手册](https://kubernetes.io/docs/tutorials/federation/set-up-cluster-federation-kubefed/)设置控制平面。
 
 ### API 资源
+
 ---
+
 一旦设置了控制平面，就可以开始创建联邦API资源。以下指南详细解释了一些资源：
 
 * [Cluster](https://kubernetes.io/docs/tasks/administer-federation/cluster/)
@@ -55,7 +61,9 @@ Kubernetes集群联盟可以包括运行在不同云提供商（例如Google Clo
 * [Services](https://kubernetes.io/docs/concepts/cluster-administration/federation-service-discovery/)
 
 ### 级联删除
+
 ---
+
 Kubernetes 1.6版支持级联删除联邦资源。通过级联删除，当您从联合控制平面中删除资源时，还可以删除所有基础集群中的相应资源。
 
 在使用REST API时，级联删除在默认情况下不会启用。要启用它，请在使用REST API从联合控制层面删除资源时，设置`DeleteOptions.orphanDependents = false`选项。使用kubectl delete可以在默认情况下启用级联删除。你可以通过运行`kubectl delete --cascade = false`来禁用它。
@@ -63,7 +71,9 @@ Kubernetes 1.6版支持级联删除联邦资源。通过级联删除，当您从
 注意：Kubernetes1.5包括对联邦资源子集的级联删除支持。
 
 ### 单个集群的范围
+
 ---
+
 在诸如Google Compute Engine或Amazon Web Services之类的IaaS提供商中，虚拟机存在于区域或可用区中。我们建议Kubernetes集群中的所有虚拟机应位于相同的可用区，因为：
 
 * 与具有单个全局Kubernetes集群相比，单点故障更少。
@@ -89,6 +99,7 @@ Kubernetes集群数量的选择可能是一个相对静态的选择，只是偶�
 
 其次，决定同时可以容忍多少个集群不可用。假设最多同时不可用集群数量为U。如果您不确定，那么1是一个不错的选择。
 
-如果在发生集群故障时允许负载均衡器将流量引入到任何区域（用户访问服务可能会发生失败），则至少需要R或U+1群集中的较大者。如果不是（例如，要确保在发生群集故障时所有用户的延迟较低），则需要有R*(U+1)集群（每区域中有U+1集群）。无论如何，请尝试将各个群集放在不同的区域中。
+如果在发生集群故障时允许负载均衡器将流量引入到任何区域（用户访问服务可能会发生失败），则至少需要R或U+1群集中的较大者。如果不是（例如，要确保在发生群集故障时所有用户的延迟较低），则需要有R\*\(U+1\)集群（每区域中有U+1集群）。无论如何，请尝试将各个群集放在不同的区域中。
 
 最后，如果您的任何集群需要比Kubernetes集群的最大建议节点数量多，则可能需要更多的集群。Kubernetes v1.3支持最多1000个节点的集群。Kubernetes v1.8支持多达5000个节点的集群。
+

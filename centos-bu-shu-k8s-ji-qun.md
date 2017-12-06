@@ -1,6 +1,8 @@
-# centos 部署k8s 集群
+# 部署k8s 集群
 
-**张杰    j.zhang8@haihangyun.com**
+```
+作者：张杰  j.zhang8@haihangyun.com
+```
 
 ---
 
@@ -30,6 +32,7 @@
 * RBAC 授权
 * kublet TLS BootStrapping
 * kubedns、dashboard、heapster\(influxdb、grafana\)、EFK\(elasticsearch、fluentd、kibana\) 集群插件
+* 操作系统 centos 7
 
 ## 环境说明 {#环境说明}
 
@@ -71,7 +74,9 @@ source ~/.bashrc
 * [部署node节点](/centos-bu-shu-k8s-ji-qun/bu-shu-node-jie-dian.md)
 
 * [ 安装kubedns插件](/centos-bu-shu-k8s-ji-qun/an-zhuang-kubedns-cha-jian.md)
+
 * [安装dashboard插件](/centos-bu-shu-k8s-ji-qun/an-zhuang-dashboard-cha-jian.md)
+
 * [安装heapster插件](/centos-bu-shu-k8s-ji-qun/an-zhuang-heapster-cha-jian.md)
 
 ## 提醒 {#提醒}

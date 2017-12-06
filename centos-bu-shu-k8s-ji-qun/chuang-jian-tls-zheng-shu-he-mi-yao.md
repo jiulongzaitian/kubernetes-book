@@ -1,6 +1,8 @@
 # 创建TLS证书和秘钥 {#创建tls证书和秘钥}
 
-**张杰    j.zhang8@haihangyun.com**
+```
+作者：张杰  j.zhang8@haihangyun.com
+```
 
 ---
 
@@ -44,7 +46,7 @@
 
 **方式一：直接使用二进制源码包安装**
 
-```
+```bash
 wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
 chmod +x cfssl_linux-amd64
 mv cfssl_linux-amd64 /usr/local/bin/cfssl
@@ -142,7 +144,7 @@ EOF
 
 **生成 CA 证书和私钥**
 
-```
+```shell
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 
 #2017/11/30 10:36:35 [INFO] generating a new CA key and certificate from CSR

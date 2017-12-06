@@ -1,6 +1,8 @@
 # 安装kubectl命令行工具 {#安装kubectl命令行工具}
 
-**张杰    j.zhang8@haihangyun.com**
+```
+作者：张杰  j.zhang8@haihangyun.com
+```
 
 ---
 
