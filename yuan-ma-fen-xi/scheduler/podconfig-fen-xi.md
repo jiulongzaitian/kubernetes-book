@@ -149,7 +149,10 @@ func (m *Mux) listen(source string, listenChannel <-chan interface{}) {
 在mux 的channel 里 我们发现如果没有source 的key，则从新创建一个新的chan interface{}: newChannel
 之后不断调用listen方法，
 listen 则会遍历一下newChannel， 然后调用m.merger.Merge 方法进行最终的合并，稍后我们会分析Merge 方法。
-根据这个分析，我们可以初步猜测，NewSourceFile（） NewSourceURL（） NewSourceApiserver（）这三种方法实际上是生产者，将最终
+根据这个分析，我们可以初步猜测，NewSourceFile（） NewSourceURL（） NewSourceApiserver（）这三种方法实际上是生产者，生产出来的pod 数据，会最终写到 Channel 返回的 chan<- interface{} chan 中，这样整个产生pod 和 合并pod 的流程就已经很清楚了，三种方法不断将监控到的pod 写入到 chan interface{} 中，这个chan 是分source 的，最终会调用m.merger.Merge方法进行最终的合并。
+
+现在我们暂且不分析pod 是具体怎么来的，我们先分析pod 获得后是如何merger 的。在下面分析过程中，我们要时刻关注updates 这个对象。
+
 
 
 
