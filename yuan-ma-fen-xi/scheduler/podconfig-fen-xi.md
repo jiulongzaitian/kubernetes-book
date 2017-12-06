@@ -31,6 +31,8 @@ pkg/kubelet/kubelet.go
   
 ```
 
+# PodConfig 初始化
+
 具体看 pkg/kubelet/kubelet.go  makePodSourceConfig\(\)
 
 ```golang
@@ -146,13 +148,57 @@ func (m *Mux) listen(source string, listenChannel <-chan interface{}) {
 }
 
 ```
+
 在mux 的channel 里 我们发现如果没有source 的key，则从新创建一个新的chan interface{}: newChannel
 之后不断调用listen方法，
 listen 则会遍历一下newChannel， 然后调用m.merger.Merge 方法进行最终的合并，稍后我们会分析Merge 方法。
 根据这个分析，我们可以初步猜测，NewSourceFile（） NewSourceURL（） NewSourceApiserver（）这三种方法实际上是生产者，生产出来的pod 数据，会最终写到 Channel 返回的 chan<- interface{} chan 中，这样整个产生pod 和 合并pod 的流程就已经很清楚了，三种方法不断将监控到的pod 写入到 chan interface{} 中，这个chan 是分source 的，最终会调用m.merger.Merge方法进行最终的合并。
 
-现在我们暂且不分析pod 是具体怎么来的，我们先分析pod 获得后是如何merger 的。在下面分析过程中，我们要时刻关注updates 这个对象。
 
+# POD 是如何获取的
+我们来分析  chan<- interface{}  到底是什么
+
+以 NewSourceFile(）方法为例  pkg/kubelet/config/file.go
+
+```golang
+func NewSourceFile(path string, nodeName types.NodeName, period time.Duration, updates chan<- interface{}) {
+	// "golang.org/x/exp/inotify" requires a path without trailing "/"
+	path1 := strings.TrimRight(path, string(os.PathSeparator))
+
+	config := newSourceFile(path1, nodeName, period, updates)
+	glog.V(1).Infof("Watching path %q period %v", path1, period)
+	go wait.Forever(config.run, period)
+	glog.V(1).Info("after wait.Forever(config.run, period) ...")
+}
+
+func newSourceFile(path string, nodeName types.NodeName, period time.Duration, updates chan<- interface{}) *sourceFile {
+	send := func(objs []interface{}) {
+		var pods []*v1.Pod
+		for _, o := range objs {
+			pods = append(pods, o.(*v1.Pod))
+		}
+		updates <- kubetypes.PodUpdate{Pods: pods, Op: kubetypes.SET, Source: kubetypes.FileSource}
+	}
+	store := cache.NewUndeltaStore(send, cache.MetaNamespaceKeyFunc)
+	return &sourceFile{
+		path:           path,
+		nodeName:       nodeName,
+		store:          store,
+		fileKeyMapping: map[string]string{},
+		updates:        updates,
+	}
+}
+
+```
+
+此时 chan<- interface{} 在 NewSourceFile 方法里  是 updates 参数
+
+
+现在我们暂且不分析pod 是具体怎么来的，我们先分析pod 获得后是如何merger 的。在下面分析过程中，我们要时刻关注updates 这个对象。updates 最终， 在 newSourceFile ，updates 存放于 send 这个闭包，这样我们基本上已经知道updates 是什么了，
+```
+updates <- kubetypes.PodUpdate{Pods: pods, Op: kubetypes.SET, Source: kubetypes.FileSource}
+```
+就是一个 
 
 
 
