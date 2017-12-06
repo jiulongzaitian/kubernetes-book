@@ -51,8 +51,6 @@ pkg/kubelet/kubelet.go
 三种pod 来源方式分别是 NewSourceFile NewSourceURL NewSourceApiserver 方式获得的，注意每个方法的最后一个参数: cfg.Channel  这个方法会最终调用merge 来合并数据， 合并完的数据 最终都会放到 podstorage 的updates里，而updates 又贯穿到podconfig 中，所以最终数据全部到了podconfig 的updates中。 
  研究代码时候需要重点关注updates 对象 和 merge 过程
 
-
-
 pkg/kubelet/config/config.go   NewPodConfig\(\)
 
 ```golang
