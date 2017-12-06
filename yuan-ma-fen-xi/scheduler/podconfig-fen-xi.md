@@ -82,6 +82,20 @@ type PodUpdate struct {
 }
 ``` 
 每个PodUpdate 主要是存的 相同来源:source 下，相同操作：OP 下的一堆POD 列表。
+再看newPodStorage 方法：
+```golang
+pkg/kubelet/config/config.go
+func newPodStorage(updates chan<- kubetypes.PodUpdate, mode PodConfigNotificationMode, recorder record.EventRecorder) *podStorage {
+	return &podStorage{
+		pods:        make(map[string]map[types.UID]*v1.Pod),
+		mode:        mode,
+		updates:     updates,
+		sourcesSeen: sets.String{},
+		recorder:    recorder,
+	}
+}
+```
+storage 里pods 字段是一个二重map，第一层代表的是来源source，第二层代表的是pod 的uuid，value是pod 值
 
 
 
