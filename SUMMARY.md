@@ -20,6 +20,7 @@
     * [kubelet核心组件](yuan-ma-fen-xi/scheduler/kubelethe-xin-zu-jian.md)
     * [kubelet主循环](yuan-ma-fen-xi/scheduler/kubeletzhu-xun-huan.md)
     * [kubelet总结](yuan-ma-fen-xi/scheduler/kubeletzong-jie.md)
+    * [PodConfig 分析](yuan-ma-fen-xi/scheduler/podconfig-fen-xi.md)
   * [kube-scheduler简析](yuan-ma-fen-xi/kube-scheduler.md)
     * [scheduler主启动流程](yuan-ma-fen-xi/kube-scheduler/schedulerzhu-qi-dong-liu-cheng.md)
     * [scheduler初始化](yuan-ma-fen-xi/kube-scheduler/schedulerchu-shi-hua.md)
@@ -33,9 +34,10 @@
   * [Garbage Collection](kubernetes-new-feature/garbage-collection.md)
   * [Federation](kubernetes-new-feature/kubernetes-federation.md)
   * [Pod Priority and Preemption](kubernetes-new-feature/pod-priority-and-preemption.md)
-* openshift
+* [openshift](openshift.md)
+  * openshift 部署
 * [harbor](harbor.md)
   * [harbor高可用部署](harbor/harborgao-ke-yong-bu-shu.md)
-* docker-compose
+* [docker-compose](docker-compose.md)
   * [Docker Compose搭建mysql主从复制](docker-composepei-zhi-wen-jian-xiang-jie.md)
 
