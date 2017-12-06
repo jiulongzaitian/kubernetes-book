@@ -69,9 +69,11 @@ func NewPodConfig(mode PodConfigNotificationMode, recorder record.EventRecorder)
     return podConfig
 }
 ```
-先创建了一个updates 对象，这是一个有50个缓存的chan，具体为什么是50个可以仔细研究一下，通过代码我们可以看到updates 是storage 和podConfig里的一个对象， 而storage 是mux 里的一个对象，因此updates 贯穿storage，podConfig，mux，中，最终通过mux 的操作，将merge 的数据放到updates里，供podconfig 所用。 通过研究 PodUpdate 结构体我们可以看到，
-``` golang
+先创建了一个updates 对象，这是一个有50个缓存的chan，具体为什么是50个可以仔细研究一下，通过代码我们可以看到updates 是storage 和podConfig里的一个对象， 而storage 是mux 里的一个对象，因此updates 贯穿storage，podConfig，mux，中，最终通过mux 的操作，将merge 的数据放到updates里，供podconfig 所用。 通过研究 PodUpdate 结构体我们可以看到
 pkg/kubelet/types/pod_update.go
+
+``` golang
+
 type PodUpdate struct {
 	Pods   []*v1.Pod
 	Op     PodOperation
@@ -104,8 +106,50 @@ func NewMux(merger Merger) *Mux {
 	return mux
 }
 ```
-此方法将外面创建的storage 设置为merger 字段，代表将要进行merger， sources 字段是一个map，key 是来源， value 是一个chan interface{}， 它实际上是一个PodUpdate 对象。
-我们以 makePodSourceConfig\(\)
+此方法将外面创建的storage 设置为merger 字段，代表将要进行merger， sources 字段是一个map，key 是来源， value 是一个chan interface{}， 它实际上是一个PodUpdate 对象
+我们以 makePodSourceConfig\(\) 方法的 NewSourceFile 进行分析跟踪
+```golang
+  config.NewSourceFile(kubeCfg.PodManifestPath, nodeName, kubeCfg.FileCheckFrequency.Duration, cfg.Channel(kubetypes.FileSource))
+```
+最后一个参数 调用podconfig 的Channel 方法
+```golang
+func (c *PodConfig) Channel(source string) chan<- interface{} {
+	c.sourcesLock.Lock()
+	defer c.sourcesLock.Unlock()
+	c.sources.Insert(source)
+	return c.mux.Channel(source)
+}
+```
+这个Channel 会返回一个只写的chan，  作为NewSourceFile 的最后一个参数， Channel方法里面又调用c.mux.Channel 方法
+```golang
+func (m *Mux) Channel(source string) chan interface{} {
+	if len(source) == 0 {
+		panic("Channel given an empty name")
+	}
+	m.sourceLock.Lock()
+	defer m.sourceLock.Unlock()
+	channel, exists := m.sources[source]
+	if exists {
+		return channel
+	}
+	newChannel := make(chan interface{})
+	m.sources[source] = newChannel
+	go wait.Until(func() { m.listen(source, newChannel) }, 0, wait.NeverStop)
+	return newChannel
+}
+
+// listenChannel 循环遍历可读 channel
+func (m *Mux) listen(source string, listenChannel <-chan interface{}) {
+	for update := range listenChannel {
+		m.merger.Merge(source, update)
+	}
+}
+
+```
+在mux 的channel 里 我们发现如果没有source 的key，则从新创建一个新的chan interface{}: newChannel
+之后不断调用listen方法，
+listen 则会遍历一下newChannel， 然后调用m.merger.Merge 方法进行最终的合并，稍后我们会分析Merge 方法。
+根据这个分析，我们可以初步猜测，NewSourceFile（） NewSourceURL（） NewSourceApiserver（）这三种方法实际上是生产者，将最终
 
 
 
