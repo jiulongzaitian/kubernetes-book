@@ -245,7 +245,141 @@ s.store.Add(pod) 方法， 具体实现暂不分析
 这就是updates 的来源
 
 # POD 是如何合并的
+分析 m.merger.Merge 方法：pkg/kubelet/config/config.go 
+```
+func (s *podStorage) Merge(source string, change interface{}) error {
+	s.updateLock.Lock()
+	defer s.updateLock.Unlock()
 
+	seenBefore := s.sourcesSeen.Has(source)
+	adds, updates, deletes, removes, reconciles, restores := s.merge(source, change)
+	firstSet := !seenBefore && s.sourcesSeen.Has(source)
+
+	// deliver update notifications
+	switch s.mode {
+	// 默认用的这个模式
+...
+}
+
+```
+此方法有个重要的实现  s.merge（），最后将经过merge 的数据 扔到 storage 中的updates 中，这样podConfig 的updates 也有数据了，因为用的是相同的chan
+
+merge 实现
+```golang
+func (s *podStorage) merge(source string, change interface{}) (adds, updates, deletes, removes, reconciles, restores *kubetypes.PodUpdate) {
+	s.podLock.Lock()
+	defer s.podLock.Unlock()
+
+	addPods := []*v1.Pod{}
+	updatePods := []*v1.Pod{}
+	deletePods := []*v1.Pod{}
+	removePods := []*v1.Pod{}
+	reconcilePods := []*v1.Pod{}
+	restorePods := []*v1.Pod{}
+
+	pods := s.pods[source]
+	if pods == nil {
+		pods = make(map[types.UID]*v1.Pod)
+	}
+
+	// updatePodFunc is the local function which updates the pod cache *oldPods* with new pods *newPods*.
+	// After updated, new pod will be stored in the pod cache *pods*.
+	// Notice that *pods* and *oldPods* could be the same cache.
+	// 对于SET 操作来说 newPods 就是新channnel 里的 pods
+	// oldPods 是当前缓存里的pods
+	// pods 刚开始是空的
+
+	updatePodsFunc := func(newPods []*v1.Pod, oldPods, pods map[types.UID]*v1.Pod) {
+		// 因为对于SET 操作 newpods 里的是全量的pod， 需要过滤重名的
+		//[]*v1.Pod
+		filtered := filterInvalidPods(newPods, source, s.recorder)
+		//过滤完后
+		for _, ref := range filtered {
+			// Annotate the pod with the source before any comparison.
+			// 这个方式挺厉害 Annotations 并没有重新发布到etcd中
+			if ref.Annotations == nil {
+				ref.Annotations = make(map[string]string)
+			}
+			ref.Annotations[kubetypes.ConfigSourceAnnotationKey] = source
+			if existing, found := oldPods[ref.UID]; found {
+				// old 里面如果有 新pod 里的索引，则天机到pods里
+				pods[ref.UID] = existing
+
+				// 开始比较老的 和 新的的差异
+				needUpdate, needReconcile, needGracefulDelete := checkAndUpdatePod(existing, ref)
+				if needUpdate {
+					updatePods = append(updatePods, existing)
+				} else if needReconcile {
+					reconcilePods = append(reconcilePods, existing)
+				} else if needGracefulDelete {
+					deletePods = append(deletePods, existing)
+				}
+				continue
+			}
+			// 没有找到  才设置 FirstSeenTime
+			recordFirstSeenTime(ref)
+			pods[ref.UID] = ref
+			addPods = append(addPods, ref)
+		}
+	}
+
+	update := change.(kubetypes.PodUpdate)
+	switch update.Op {
+	case kubetypes.ADD, kubetypes.UPDATE, kubetypes.DELETE:
+		if update.Op == kubetypes.ADD {
+			glog.V(4).Infof("Adding new pods from source %s : %v", source, update.Pods)
+		} else if update.Op == kubetypes.DELETE {
+			glog.V(4).Infof("Graceful deleting pods from source %s : %v", source, update.Pods)
+		} else {
+			glog.V(4).Infof("Updating pods from source %s : %v", source, update.Pods)
+		}
+		updatePodsFunc(update.Pods, pods, pods)
+
+	case kubetypes.REMOVE:
+		glog.V(4).Infof("Removing pods from source %s : %v", source, update.Pods)
+		for _, value := range update.Pods {
+			if existing, found := pods[value.UID]; found {
+				// this is a delete
+				delete(pods, value.UID)
+				removePods = append(removePods, existing)
+				continue
+			}
+			// this is a no-op
+		}
+
+	case kubetypes.SET:
+		glog.V(4).Infof("Setting pods for source %s", source)
+		s.markSourceSet(source)
+		// Clear the old map entries by just creating a new map
+		oldPods := pods
+		pods = make(map[types.UID]*v1.Pod)
+		updatePodsFunc(update.Pods, oldPods, pods)
+		for uid, existing := range oldPods {
+			if _, found := pods[uid]; !found {
+				// this is a delete
+				removePods = append(removePods, existing)
+			}
+		}
+	case kubetypes.RESTORE:
+		glog.V(4).Infof("Restoring pods for source %s", source)
+
+	default:
+		glog.Warningf("Received invalid update type: %v", update)
+
+	}
+
+	s.pods[source] = pods
+
+	adds = &kubetypes.PodUpdate{Op: kubetypes.ADD, Pods: copyPods(addPods), Source: source}
+	updates = &kubetypes.PodUpdate{Op: kubetypes.UPDATE, Pods: copyPods(updatePods), Source: source}
+	deletes = &kubetypes.PodUpdate{Op: kubetypes.DELETE, Pods: copyPods(deletePods), Source: source}
+	removes = &kubetypes.PodUpdate{Op: kubetypes.REMOVE, Pods: copyPods(removePods), Source: source}
+	reconciles = &kubetypes.PodUpdate{Op: kubetypes.RECONCILE, Pods: copyPods(reconcilePods), Source: source}
+	restores = &kubetypes.PodUpdate{Op: kubetypes.RESTORE, Pods: copyPods(restorePods), Source: source}
+
+	return adds, updates, deletes, removes, reconciles, restores
+}
+```
  
 
 
