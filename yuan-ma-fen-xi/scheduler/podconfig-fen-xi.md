@@ -49,24 +49,7 @@ pkg/kubelet/kubelet.go
     config.NewSourceApiserver(kubeDeps.KubeClient, nodeName, updatechannel)    
 ```
 三种pod 来源方式分别是 NewSourceFile NewSourceURL NewSourceApiserver 方式获得的，注意每个方法的最后一个参数: cfg.Channel  这个方法会最终调用merge 来合并数据， 合并完的数据 最终都会放到 podstorage 的updates里，而updates 又贯穿到podconfig 中，所以最终数据全部到了podconfig 的updates中。 
-
-podConfig struct 分析
-
-pkg/kubelet/config/config.go   NewPodConfig\(\)
-
-```golang
-type PodConfig struct {
-    pods *podStorage
-    mux  *config.Mux
-
-    // the channel of denormalized changes passed to listeners
-    updates chan kubetypes.PodUpdate
-
-    // contains the list of all configured sources
-    sourcesLock       sync.Mutex
-    sources           sets.String
-    checkpointManager checkpoint.Manager
-}
+ 研究代码时候需要重点关注updates 对象 和 merge 过程
 
 
 ```
@@ -89,6 +72,17 @@ func NewPodConfig(mode PodConfigNotificationMode, recorder record.EventRecorder)
     return podConfig
 }
 ```
+先创建了一个updates 对象，这是一个有50个缓存的chan，具体为什么是50个可以仔细研究一下，通过代码我们可以看到updates 是storage 和podConfig里的一个对象， 而storage 是mux 里的一个对象，因此updates 贯穿storage，podConfig，mux，中，最终通过mux 的操作，将merge 的数据放到updates里，供podconfig 所用。 通过研究 PodUpdate 结构体我们可以看到，
+```golang
+pkg/kubelet/types/pod_update.go
+type PodUpdate struct {
+	Pods   []*v1.Pod
+	Op     PodOperation
+	Source string
+}
+``` 
+每个PodUpdate 主要是存的 相同来源:source 下，相同操作：OP 下的一堆POD 列表。
+
 
 
 
