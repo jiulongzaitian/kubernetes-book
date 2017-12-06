@@ -1,6 +1,8 @@
 # 部署node节点 {#部署node节点}
 
-**张杰    j.zhang8@haihangyun.com**
+```
+作者：张杰  j.zhang8@haihangyun.com
+```
 
 ---
 

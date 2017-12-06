@@ -1,6 +1,10 @@
 # 创建 kubeconfig 文件 {#创建-kubeconfig-文件}
 
-**张杰    j.zhang8@haihangyun.com**
+
+
+```
+作者：张杰  j.zhang8@haihangyun.com
+```
 
 ---
 

@@ -1,6 +1,10 @@
 # 创建高可用 etcd 集群 {#创建高可用-etcd-集群}
 
-**张杰    j.zhang8@haihangyun.com**
+
+
+```
+作者：张杰  j.zhang8@haihangyun.com
+```
 
 ---
 

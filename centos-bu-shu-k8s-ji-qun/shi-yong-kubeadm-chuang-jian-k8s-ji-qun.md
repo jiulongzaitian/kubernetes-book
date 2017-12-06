@@ -1,6 +1,8 @@
 * [x] # 利用 kubeadm   搭建kubernetes 集群
 
-                                                                                                     ** 张杰             j.zhang8@haihangyun.com**
+  ```
+  张杰             j.zhang8@haihangyun.com
+  ```
 
 ---
 
