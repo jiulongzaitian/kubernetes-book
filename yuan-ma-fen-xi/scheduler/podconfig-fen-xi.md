@@ -52,11 +52,10 @@ pkg/kubelet/kubelet.go
  研究代码时候需要重点关注updates 对象 和 merge 过程
 
 
-```
 
 pkg/kubelet/config/config.go   NewPodConfig\(\)
 
-```
+```golang
 // NewPodConfig creates an object that can merge many configuration sources into a stream
 // of normalized updates to a pod configuration.
 func NewPodConfig(mode PodConfigNotificationMode, recorder record.EventRecorder) *PodConfig {
@@ -73,7 +72,7 @@ func NewPodConfig(mode PodConfigNotificationMode, recorder record.EventRecorder)
 }
 ```
 先创建了一个updates 对象，这是一个有50个缓存的chan，具体为什么是50个可以仔细研究一下，通过代码我们可以看到updates 是storage 和podConfig里的一个对象， 而storage 是mux 里的一个对象，因此updates 贯穿storage，podConfig，mux，中，最终通过mux 的操作，将merge 的数据放到updates里，供podconfig 所用。 通过研究 PodUpdate 结构体我们可以看到，
-```golang
+``` golang
 pkg/kubelet/types/pod_update.go
 type PodUpdate struct {
 	Pods   []*v1.Pod
