@@ -39,26 +39,14 @@ pkg/kubelet/kubelet.go
         // source of all configuration
         // 创建一个PodConfig 对象，最终这个podConfig 会汇总三种pod 来源
     cfg := config.NewPodConfig(config.PodConfigNotificationIncremental, kubeDeps.Recorder)
+    #1
+    config.NewSourceFile(kubeCfg.PodManifestPath, nodeName, kubeCfg.FileCheckFrequency.Duration, cfg.Channel(kubetypes.FileSource))
+    #2
+    config.NewSourceURL(kubeCfg.ManifestURL, manifestURLHeader, nodeName, kubeCfg.HTTPCheckFrequency.Duration, cfg.Channel(kubetypes.HTTPSource))
 
-...
-    // define file config source
-    // 张杰 用来创建static pod 用的
-        config.NewSourceFile(kubeCfg.PodManifestPath, nodeName, kubeCfg.FileCheckFrequency.Duration, cfg.Channel(kubetypes.FileSource))
-    
-    // define url config source
-    // 通过HTTP manifest url 来创建static pod 的
-        config.NewSourceURL(kubeCfg.ManifestURL, manifestURLHeader, nodeName, kubeCfg.HTTPCheckFrequency.Duration, cfg.Channel(kubetypes.HTTPSource))
-...    
-
-    // Restore from the checkpoint path
-    // NOTE: This MUST happen before creating the apiserver source
-    // below, or the checkpoint would override the source of truth.
+    #3
     updatechannel := cfg.Channel(kubetypes.ApiserverSource)
-
-...
-
-    // 通过apiserver 来创建pod 的
-        config.NewSourceApiserver(kubeDeps.KubeClient, nodeName, updatechannel)    
+    config.NewSourceApiserver(kubeDeps.KubeClient, nodeName, updatechannel)    
 ```
 
 podConfig struct 分析
