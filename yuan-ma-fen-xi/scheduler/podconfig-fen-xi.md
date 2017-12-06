@@ -264,12 +264,13 @@ func (s *podStorage) Merge(source string, change interface{}) error {
 ```
 此方法有个重要的实现  s.merge（），最后将经过merge 的数据 扔到 storage 中的updates 中，这样podConfig 的updates 也有数据了，因为用的是相同的chan
 
-merge 实现
+merge 实现 具体看注释
 ```golang
 func (s *podStorage) merge(source string, change interface{}) (adds, updates, deletes, removes, reconciles, restores *kubetypes.PodUpdate) {
 	s.podLock.Lock()
 	defer s.podLock.Unlock()
 
+	// 初始化不同的分类
 	addPods := []*v1.Pod{}
 	updatePods := []*v1.Pod{}
 	deletePods := []*v1.Pod{}
@@ -277,6 +278,7 @@ func (s *podStorage) merge(source string, change interface{}) (adds, updates, de
 	reconcilePods := []*v1.Pod{}
 	restorePods := []*v1.Pod{}
 
+	// 获得storage 中source 来源的老的数据
 	pods := s.pods[source]
 	if pods == nil {
 		pods = make(map[types.UID]*v1.Pod)
@@ -348,6 +350,7 @@ func (s *podStorage) merge(source string, change interface{}) (adds, updates, de
 		}
 
 	case kubetypes.SET:
+		// 对于三种来源来说，都是SET 方法，可以重点看看
 		glog.V(4).Infof("Setting pods for source %s", source)
 		s.markSourceSet(source)
 		// Clear the old map entries by just creating a new map
@@ -368,6 +371,7 @@ func (s *podStorage) merge(source string, change interface{}) (adds, updates, de
 
 	}
 
+	// 更新
 	s.pods[source] = pods
 
 	adds = &kubetypes.PodUpdate{Op: kubetypes.ADD, Pods: copyPods(addPods), Source: source}
@@ -379,6 +383,7 @@ func (s *podStorage) merge(source string, change interface{}) (adds, updates, de
 
 	return adds, updates, deletes, removes, reconciles, restores
 }
+
 ```
  
 
