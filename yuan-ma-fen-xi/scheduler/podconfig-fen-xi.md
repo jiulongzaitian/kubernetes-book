@@ -219,7 +219,32 @@ func (u *UndeltaStore) Add(obj interface{}) error {
 }
 ```
 我们可以简单看一下Add 方法，每次往UndeltaStore 写完数据时候，都会最终调用PushFunc 这个方法，就是send 方法，而u.Store.List() 则是一个添加完新数据后的全量方法，那么问题来了，在哪里开始调用这个Add 方法呢：
-我们回头来看  NewSourceFile() 方法
+我们回头来看  NewSourceFile() 方法， 方法里调用了 `go wait.Forever(config.run, period)`
+
+run 方法的实现: 它又调用了watch 方法
+```golang
+func (s *sourceFile) run() {
+	//张杰 在linux 环境下，watch 会执行本package 里 file_linux.go 文件的watch 方法
+	if err := s.watch(); err != nil {
+		glog.Errorf("Unable to read manifest path %s: %v -------", s.path, err)
+	}
+}
+
+```
+如果你是在linux 环境里，watch 实现是在
+pkg/kubelet/config/file_linux.go
+```golang
+
+func (s *sourceFile) watch() error 
+
+通过分析watch，可以追到processEvent 方法,在 processEvent 方法里，你可以清晰的看到：
+s.store.Add(pod) 方法， 具体实现暂不分析
+
+```
+
+这就是updates 的来源
+
+
  
 
 
