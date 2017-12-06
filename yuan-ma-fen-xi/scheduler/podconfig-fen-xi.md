@@ -96,6 +96,21 @@ func newPodStorage(updates chan<- kubetypes.PodUpdate, mode PodConfigNotificatio
 }
 ```
 storage 里pods 字段是一个二重map，第一层代表的是来源source，第二层代表的是pod 的uuid，value是pod 值
+updates: 存的是updates 对象
+再看 mux 对象： config.NewMux(storage),
+```golang
+func NewMux(merger Merger) *Mux {
+	mux := &Mux{
+		sources: make(map[string]chan interface{}),
+		merger:  merger,
+	}
+	return mux
+}
+```
+此方法将外面创建的storage 设置为merger 字段，代表将要进行merger， sources 字段是一个map，key 是来源， value 是一个chan interface{}， 它实际上是一个PodUpdate 对象。
+我们以 makePodSourceConfig\(\)
+
+
 
 
 
