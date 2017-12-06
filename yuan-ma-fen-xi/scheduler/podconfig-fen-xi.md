@@ -307,7 +307,7 @@ func (s *podStorage) merge(source string, change interface{}) (adds, updates, de
 				// old 里面如果有 新pod 里的索引，则天机到pods里
 				pods[ref.UID] = existing
 
-				// 开始比较老的 和 新的的差异
+				// 开始比较老的 和 新的的差异 重要方法 
 				needUpdate, needReconcile, needGracefulDelete := checkAndUpdatePod(existing, ref)
 				if needUpdate {
 					updatePods = append(updatePods, existing)
@@ -385,6 +385,10 @@ func (s *podStorage) merge(source string, change interface{}) (adds, updates, de
 }
 
 ```
+通过merger 后，数据就会放到podconfig 对象的updates 字段中
+
+
+kubernetes 用来大量生产者 消费者分离的机制，并大量运用channel 做关联
  
 
 
