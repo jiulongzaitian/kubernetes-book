@@ -27,7 +27,7 @@
     * [scheduler调度流程](yuan-ma-fen-xi/kube-scheduler/schedulerdiao-du-liu-cheng.md)
     * [scheduler调度算法](yuan-ma-fen-xi/kube-scheduler/schedulerdiao-du-suan-fa.md)
     * [scheduler总结](yuan-ma-fen-xi/kube-scheduler/schedulerzong-jie.md)
-  * kubelet
+  * [kubelet](yuan-ma-fen-xi/kubelet.md)
 * [Kubernetes概念](kubernetes-new-feature.md)
   * [ConfigMap](kubernetes-new-feature/configmap.md)
   * [Replica Sets](kubernetes-new-feature/replica-sets.md)
