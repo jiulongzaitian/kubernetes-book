@@ -244,6 +244,7 @@ s.store.Add(pod) 方法， 具体实现暂不分析
 
 这就是updates 的来源
 
+# POD 是如何合并的
 
  
 
