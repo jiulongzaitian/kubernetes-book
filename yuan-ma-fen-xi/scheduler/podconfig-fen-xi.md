@@ -395,7 +395,7 @@ func startKubelet(k kubelet.Bootstrap, podCfg *config.PodConfig, kubeCfg *kubele
 }
 ```
 
-run 方法 是  pkg/kubelet/kubelet.go kubelet 实现,这样经过上面种种merger 后最终到了podconfig 中的updates 字段里的chan，终于作为了kubelet 的RUn 方法的一个参数，至于RUNfang
+run 方法 是  pkg/kubelet/kubelet.go kubelet 实现,这样经过上面种种merger 后最终到了podconfig 中的updates 字段里的chan，终于作为了kubelet 的RUn 方法的一个参数，至于RUN方法具体的实现，我们会在
 ```golang
 func (kl *Kubelet) Run(updates <-chan kubetypes.PodUpdate) {
 }

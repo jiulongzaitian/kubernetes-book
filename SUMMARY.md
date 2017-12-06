@@ -21,6 +21,7 @@
     * [kubelet主循环](yuan-ma-fen-xi/scheduler/kubeletzhu-xun-huan.md)
     * [kubelet总结](yuan-ma-fen-xi/scheduler/kubeletzong-jie.md)
     * [PodConfig 分析](yuan-ma-fen-xi/scheduler/podconfig-fen-xi.md)
+    * [kubelet Run 方法解读](yuan-ma-fen-xi/scheduler/kubelet-run-fang-fa-jie-du.md)
   * [kube-scheduler简析](yuan-ma-fen-xi/kube-scheduler.md)
     * [scheduler主启动流程](yuan-ma-fen-xi/kube-scheduler/schedulerzhu-qi-dong-liu-cheng.md)
     * [scheduler初始化](yuan-ma-fen-xi/kube-scheduler/schedulerchu-shi-hua.md)
