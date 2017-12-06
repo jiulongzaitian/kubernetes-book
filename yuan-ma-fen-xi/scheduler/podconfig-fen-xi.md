@@ -198,7 +198,32 @@ func newSourceFile(path string, nodeName types.NodeName, period time.Duration, u
 ```
 updates <- kubetypes.PodUpdate{Pods: pods, Op: kubetypes.SET, Source: kubetypes.FileSource}
 ```
-就是一个 
+就是一个 PodUpdate 对象，存放了Pods,操作是SET，还有来源，通过pods 我们可以看到，pods 是一个全量数据。
+那为什么要用全量数据， 我们看一下send 是怎么调用的。看一下 NewUndeltaStore 方法：
+/vendor/k8s.io/client-go/tools/cache/undelta_store.go
+```
+// NewUndeltaStore returns an UndeltaStore implemented with a Store.
+func NewUndeltaStore(pushFunc func([]interface{}), keyFunc KeyFunc) *UndeltaStore {
+	return &UndeltaStore{
+		Store:    NewStore(keyFunc),
+		PushFunc: pushFunc,
+	}
+}
+
+func (u *UndeltaStore) Add(obj interface{}) error {
+	if err := u.Store.Add(obj); err != nil {
+		return err
+	}
+	u.PushFunc(u.Store.List())
+	return nil
+}
+```
+我们可以简单看一下Add 方法，每次往UndeltaStore 写完数据时候，都会最终调用PushFunc 这个方法，就是send 方法，而u.Store.List() 则是一个添加完新数据后的全量方法，那么问题来了，在哪里开始调用这个Add 方法呢：
+我们回头来看  NewSourceFile() 方法
+ 
+
+
+
 
 
 
