@@ -385,7 +385,22 @@ func (s *podStorage) merge(source string, change interface{}) (adds, updates, de
 }
 
 ```
-通过merger 后，数据就会放到podconfig 对象的updates 字段中
+通过merger 后，数据就会放到podconfig 对象的updates 字段中， 最终 cmd/kubelet/app/server.gostartKubelet  方法会调用RUN方法
+```golang
+
+func startKubelet(k kubelet.Bootstrap, podCfg *config.PodConfig, kubeCfg *kubeletconfiginternal.KubeletConfiguration, kubeDeps *kubelet.Dependencies) {
+	// start the kubelet 重点
+	go wait.Until(func() { k.Run(podCfg.Updates()) }, 0, wait.NeverStop)
+
+}
+```
+
+run 方法 是  pkg/kubelet/kubelet.go kubelet 实现,这样经过上面种种merger 后最终到了podconfig 中的updates 字段里的chan，终于作为了kubelet 的RUn 方法的一个参数，至于RUNfang
+```golang
+func (kl *Kubelet) Run(updates <-chan kubetypes.PodUpdate) {
+}
+
+```
 
 
 kubernetes 用来大量生产者 消费者分离的机制，并大量运用channel 做关联
