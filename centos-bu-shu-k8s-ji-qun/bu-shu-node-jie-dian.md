@@ -230,7 +230,7 @@ etcdctl2 get /kube-centos/network/subnets/172.30.14.0-24
 ### 下载最新的 kubelet 和 kube-proxy 二进制文件 {#下载最新的-kubelet-和-kube-proxy-二进制文件}
 
 ```
-wget https://dl.k8s.io/v1.6.0/kubernetes-server-linux-amd64.tar.gz
+wget https://dl.k8s.io/v1.8.4/kubernetes-server-linux-amd64.tar.gz
 tar -xzvf kubernetes-server-linux-amd64.tar.gz
 cd kubernetes
 tar -xzvf  kubernetes-src.tar.gz

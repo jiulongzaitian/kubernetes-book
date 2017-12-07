@@ -14,7 +14,7 @@
 mkdir ~/sftp
 cd ~/sftp
 
-wget https://dl.k8s.io/v1.6.0/kubernetes-client-linux-amd64.tar.gz
+wget https://dl.k8s.io/v1.8.4/kubernetes-client-linux-amd64.tar.gz
 
 tar -xzvf kubernetes-client-linux-amd64.tar.gz
 
