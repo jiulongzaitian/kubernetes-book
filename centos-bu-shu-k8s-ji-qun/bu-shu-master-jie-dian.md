@@ -189,7 +189,7 @@ EOF
 ```
 systemctl daemon-reload
 systemctl enable kube-apiserver
-systemctl start kube-apiserver
+systemctl restart kube-apiserver
 systemctl status kube-apiserver -l
 ```
 
