@@ -43,7 +43,7 @@ router-2-40fc3             1/1       Running   0          11d
 
 ## 修改Router的template
 
-###  Background {#router-template-background}
+### Background {#router-template-background}
 
 HAProxy的template是以[golang template](http://golang.org/pkg/text/template/)为基础，能够解析部署时配置的环境变量，下面介绍的所有配置信息以及函数。
 
@@ -61,14 +61,14 @@ HAProxy的配置文件通过template生成，在生成过程中，所有`{{" som
 
 | 函数 |  |
 | :--- | :--- |
-| **`endpointsForAlias(alias ServiceAliasConfig, svc ServiceUnit) []Endpoint`** | 返回可用的endpoints列表. |
-| **`env(variable, default string) string`** | 尝试获得pod的环境变量，如果获得失败或为空，返回默认值default. |
-| **`matchPattern(pattern, s string) bool`** | 正则匹配，第一个参数为正则表达式，第二个为要匹配的字符串，返回结果为布尔类型. |
-| **`isInteger(s string) bool`** | 判断参数变量是否为整型. |
-| **`matchValues(s string, allowedValues …​string) bool`** | 匹配字符串s，是否在字符串列表**`allowedValues`**中. |
-| **`genSubdomainWildcardRegexp(hostname, path string, exactPath bool) string`** | Generates a regular expression matching the subdomain for hosts \(and paths\) with a wildcard policy. |
-| **`generateRouteRegexp(hostname, path string, wildcard bool) string`** | Generates a regular expression matching the route hosts \(and paths\). The first argument is the host name, the second is the path, and the third is a wildcard Boolean. |
-| **`genCertificateHostName(hostname string, wildcard bool) string`** | Generates host name to use for serving/matching certificates. First argument is the host name and the second is the wildcard Boolean. |
+| `endpointsForAlias(alias ServiceAliasConfig, svc ServiceUnit) []Endpoint` | 返回可用的endpoints列表. |
+| `env(variable, default string) string` | 尝试获得pod的环境变量，如果获得失败或为空，返回默认值default. |
+| `matchPattern(pattern, s string) bool` | 正则匹配，第一个参数为正则表达式，第二个为要匹配的字符串，返回结果为布尔类型. |
+| `isInteger(s string) bool` | 判断参数变量是否为整型. |
+| `matchValues(s string, allowedValues …​string) bool` | 匹配字符串s，是否在字符串列表`allowedValues`中. |
+| `genSubdomainWildcardRegexp(hostname, path string, exactPath bool) string` | Generates a regular expression matching the subdomain for hosts \(and paths\) with a wildcard policy. |
+| `generateRouteRegexp(hostname, path string, wildcard bool) string` | Generates a regular expression matching the route hosts \(and paths\). The first argument is the host name, the second is the path, and the third is a wildcard Boolean. |
+| `genCertificateHostName(hostname string, wildcard bool) string` | Generates host name to use for serving/matching certificates. First argument is the host name and the second is the wildcard Boolean. |
 
 ### Router提供的参数 {#router-info-for-templates}
 
@@ -76,96 +76,133 @@ HAProxy的配置文件通过template生成，在生成过程中，所有`{{" som
 
 表2，Router配置参数
 
-Field
-
-|  | Type | Description |
+| 字段 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| **`WorkingDir`** | string | The directory that files will be written to, defaults to_**/var/lib/containers/router**_ |
-| **`State`** | ``map[string](ServiceAliasConfig)``` | The routes. |
-| **`ServiceUnits`** | `map[string]ServiceUnit` | The service lookup. |
-| **`DefaultCertificate`** | string | Full path name to the default certificate in pem format. |
-| **`PeerEndpoints`** | ```[]Endpoint`` | Peers. |
-| **`StatsUser`** | string | User name to expose stats with \(if the template supports it\). |
-| **`StatsPassword`** | string | Password to expose stats with \(if the template supports it\). |
-| **`StatsPort`** | int | Port to expose stats with \(if the template supports it\). |
-| **`BindPorts`** | bool | Whether the router should bind the default ports. |
+| `WorkingDir` | string | 写文件的目录，默认目录：_**/var/lib/containers/router**_ |
+| `State` | map\[string\]\(ServiceAliasConfig\) | The routes. |
+| `ServiceUnits` | `map[string]ServiceUnit` | The service lookup. |
+| `DefaultCertificate` | string | 以pem格式指定默认证书的完整路径名称。 |
+| `PeerEndpoints` | ```[]Endpoint`` | Peers. |
+| `StatsUser` | string | User name to expose stats with \(if the template supports it\). |
+| `StatsPassword` | string | Password to expose stats with \(if the template supports it\). |
+| `StatsPort` | int | Port to expose stats with \(if the template supports it\). |
+| `BindPorts` | bool | Whether the router should bind the default ports. |
 
-|  |  |  |
+| 表3，Router ServiceAliasConfig |  |  |
 | :--- | :--- | :--- |
-| Field | Type | Description |
-| **`Name`** | string | The user-specified name of the route. |
-| **`Namespace`** | string | The namespace of the route. |
-| **`Host`** | string | The host name. For example,`www.example.com`. |
-| **`Path`** | string | Optional path. For example,`www.example.com/myservice`where`myservice`is the path. |
-| **`TLSTermination`** | `routeapi.TLSTerminationType` | The termination policy for this back-end; drives the mapping files and router configuration. |
-| **`Certificates`** | `map[string]Certificate` | Certificates used for securing this back-end. Keyed by the certificate ID. |
-| **`Status`** | `ServiceAliasConfigStatus` | Indicates the status of configuration that needs to be persisted. |
-| **`PreferPort`** | string | Indicates the port the user wants to expose. If empty, a port will be selected for the service. |
-| **`InsecureEdgeTerminationPolicy`** | `routeapi.InsecureEdgeTerminationPolicyType` | Indicates desired behavior for insecure connections to an edge-terminated route:`none`\(or`disable`\),`allow`, or`redirect`. |
-| **`RoutingKeyName`** | string | Hash of the route + namespace name used to obscure the cookie ID. |
-| **`IsWildcard`** | bool | Indicates this service unit needing wildcard support. |
-| **`Annotations`** | `map[string]string` | Annotations attached to this route. |
-| **`ServiceUnitNames`** | `map[string]int32` | Collection of services that support this route, keyed by service name and valued on the weight attached to it with respect to other entries in the map. |
-| **`ActiveServiceUnits`** | int | Count of the`ServiceUnitNames`with a non-zero weight. |
+| 字段 | 类型 | 描述 |
+| `Name` | string | 用户指定的Route的名称. |
+| `Namespace` | string | The namespace of the route. |
+| `Host` | string | The host name. For example,`www.example.com`. |
+| `Path` | string | Optional path. For example,`www.example.com/myservice`where`myservice`is the path. |
+| `TLSTermination` | `routeapi.TLSTerminationType` | back-end的终止策略; drives the mapping files and router configuration. |
+| `Certificates` | `map[string]Certificate` | Certificates used for securing this back-end. Keyed by the certificate ID. |
+| `Status` | `ServiceAliasConfigStatus` | Indicates the status of configuration that needs to be persisted. |
+| `PreferPort` | string | Indicates the port the user wants to expose. If empty, a port will be selected for the service. |
+| `InsecureEdgeTerminationPolicy` | `routeapi.InsecureEdgeTerminationPolicyType` | Indicates desired behavior for insecure connections to an edge-terminated route:`none`\(or`disable`\),`allow`, or`redirect`. |
+| `RoutingKeyName` | string | Hash of the route + namespace name used to obscure the cookie ID. |
+| `IsWildcard` | bool | Indicates this service unit needing wildcard support. |
+| `Annotations` | `map[string]string` | Annotations attached to this route. |
+| `ServiceUnitNames` | `map[string]int32` | Collection of services that support this route, keyed by service name and valued on the weight attached to it with respect to other entries in the map. |
+| `ActiveServiceUnits` | int | Count of the`ServiceUnitNames`with a non-zero weight. |
 
-The`ServiceAliasConfig`is a route for a service. Uniquely identified by host + path. The default template iterates over routes using`{{range $cfgIdx, $cfg := .State }}`. Within such a`{{range}}`block, the template can refer to any field of the current`ServiceAliasConfig`using`$cfg.Field`.
+`ServiceAliasConfig`是service的route配置. 由host + path确定唯一性. 默认template通过`{{range $cfgIdx, $cfg := .State }}` 遍历所有routes. 
 
-|  |  |  |
+| 表4，ServiceUnit |  |  |
 | :--- | :--- | :--- |
-| Field | Type | Description |
-| **`Name`** | string | Name corresponds to a service name + namespace. Uniquely identifies the`ServiceUnit`. |
-| **`EndpointTable`** | `[]Endpoint` | Endpoints that back the service. This translates into a final back-end implementation for routers. |
+| 字段 | 类型 | 描述 |
+| `Name` | string | Name corresponds to a service name + namespace. Uniquely identifies the`ServiceUnit`. |
+| `EndpointTable` | `[]Endpoint` | Endpoints that back the service. This translates into a final back-end implementation for routers. |
 
-`ServiceUnit`is an encapsulation of a service, the endpoints that back that service, and the routes that point to the service. This is the data that drives the creation of the router configuration files
+`ServiceUnit`是service的封装，包括service后端的endpoints和指向service的routes. 
 
-|  |  |
+| 表5，Router Endpoint |  |
 | :--- | :--- |
 | Field | Type |
-| **`ID`** | string |
-| **`IP`** | string |
-| **`Port`** | string |
-| **`TargetName`** | string |
-| **`PortName`** | string |
-| **`IdHash`** | string |
-| **`NoHealthCheck`** | bool |
+| `ID` | string |
+| `IP` | string |
+| `Port` | string |
+| `TargetName` | string |
+| `PortName` | string |
+| `IdHash` | string |
+| `NoHealthCheck` | bool |
 
 `Endpoint`is an internal representation of a Kubernetes endpoint.
 
-|  |  |  |
-| :--- | :--- | :--- |
+| 表6，Router Certificate, ServiceAliasConfigStatus |   |  |  |
+| :--- | :--- | :--- | :--- |
 | Field | Type | Description |
-| **`Certificate`** | string | Represents a public/private key pair. It is identified by an ID, which will become the file name. A CA certificate will not have a`PrivateKey`set. |
-| **`ServiceAliasConfigStatus`** | string | Indicates that the necessary files for this configuration have been persisted to disk. Valid values: "saved", "". |
+| `Certificate` | string | Represents a public/private key pair. It is identified by an ID, which will become the file name. A CA certificate will not have a`PrivateKey`set. |
+| `ServiceAliasConfigStatus` | string | Indicates that the necessary files for this configuration have been persisted to disk. Valid values: "saved", "". |
 
-|  |  |  |
+| 表7，Router Certificate Type |  |  |
 | :--- | :--- | :--- |
 | Field | Type | Description |
 | ID | string |  |
 | Contents | string | The certificate. |
 | PrivateKey | string | The private key. |
 
-|  |  |  |
+| 表8，Router TLSTerminationType |  |  |
 | :--- | :--- | :--- |
 | Field | Type | Description |
-| **`TLSTerminationType`** | string | Dictates where the secure communication will stop. |
-| **`InsecureEdgeTerminationPolicyType`** | string | Indicates the desired behavior for insecure connections to a route. While each router may make its own decisions on which ports to expose, this is normally port 80. |
+| `TLSTerminationType` | string | Dictates where the secure communication will stop. |
+| `InsecureEdgeTerminationPolicyType` | string | Indicates the desired behavior for insecure connections to a route. While each router may make its own decisions on which ports to expose, this is normally port 80. |
 
 `TLSTerminationType`and`InsecureEdgeTerminationPolicyType`dictate where the secure communication will stop.
 
-|  |  |  |
+| 表9，Router TLSTerminationType Values |  |  |
 | :--- | :--- | :--- |
 | Constant | Value | Meaning |
 | `TLSTerminationEdge` | `edge` | Terminate encryption at the edge router. |
 | `TLSTerminationPassthrough` | `passthrough` | Terminate encryption at the destination, the destination is responsible for decrypting traffic. |
 | `TLSTerminationReencrypt` | `reencrypt` | Terminate encryption at the edge router and re-encrypt it with a new certificate supplied by the destination. |
 
-|  |  |
+| 表10，Router InsecureEdgeTerminationPolicyType Values |  |
 | :--- | :--- |
 | Type | Meaning |
-| **`Allow`** | Traffic is sent to the server on the insecure port \(default\). |
-| **`Disable`** | No traffic is allowed on the insecure port. |
-| **`Redirect`** | Clients are redirected to the secure port. |
+| `Allow` | Traffic is sent to the server on the insecure port \(default\). |
+| `Disable` | No traffic is allowed on the insecure port. |
+| `Redirect` | Clients are redirected to the secure port. |
 
-None \(`""`\) is the same as`Disable`.  
+None \(`""`\) is the same as`Disable`.
 
+### Annotations {#using-annotations}
+
+每个route都能够添加annotations，每个annotation有name和value组成。
+
+```
+apiVersion: v1
+kind: Route
+metadata:
+  annotations:
+    haproxy.router.openshift.io/timeout: 5500ms
+[...]
+```
+
+name可以为任意值，当不能与已存在的name冲突。value为任意字符串。例如`aa bb cc`。template使用`{{index}}`的方式获得annotation的值。例：
+
+```
+{{$balanceAlgo := index $cfg.Annotations "haproxy.router.openshift.io/balance"}}
+```
+
+下例中展示了如何进行客户端互相认证
+
+```
+{{ with $cnList := index $cfg.Annotations "whiteListCertCommonName" }}
+  {{   if ne $cnList "" }}
+    acl test ssl_c_s_dn(CN) -m str {{ $cnList }}
+    http-request deny if !test
+  {{   end }}
+{{ end }}
+```
+
+然后，使用以下命令将CNs加入白名单。
+
+```
+$ oc annotate route <route-name> --overwrite whiteListCertCommonName="CN1 CN2 CN3"
+```
+
+### 环境变量
+
+template能够使用
 
