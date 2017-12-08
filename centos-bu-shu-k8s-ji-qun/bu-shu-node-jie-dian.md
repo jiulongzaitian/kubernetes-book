@@ -294,7 +294,7 @@ KUBELET_ADDRESS="--address=${IP}"
 KUBELET_HOSTNAME="--hostname-override=${IP}"
 #
 ## location of the api-server
-KUBELET_API_SERVER="--api-servers=http://${IP}:8080"
+#KUBELET_API_SERVER="--api-servers=http://${IP}:8080"
 #
 ## pod infrastructure container
 KUBELET_POD_INFRA_CONTAINER="--pod-infra-container-image=pod-infrastructure:rhel7"
