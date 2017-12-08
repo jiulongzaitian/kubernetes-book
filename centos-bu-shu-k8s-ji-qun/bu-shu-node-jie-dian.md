@@ -237,6 +237,48 @@ tar -xzvf  kubernetes-src.tar.gz
 cp -r ./server/bin/{kube-proxy,kubelet} /usr/local/bin/
 ```
 
+### 配置config 配置文件 {#创建-kubelet-的service配置文件}
+
+`/etc/kubernetes/config`文件的内容为
+
+```
+# 设置APISERVER 的IP
+export APISERVER=10.72.84.160
+
+cat > /etc/kubernetes/config << EOF
+
+# kubernetes system config
+#
+# The following values are used to configure various aspects of all
+# kubernetes services, including
+#
+#   kube-apiserver.service
+#   kube-controller-manager.service
+#   kube-scheduler.service
+#   kubelet.service
+#   kube-proxy.service
+# logging to stderr means we get it in the systemd journal
+KUBE_LOGTOSTDERR="--logtostderr=true"
+
+# journal message level,  如果想调试可以设置为8 
+KUBE_LOG_LEVEL="--v=0"
+
+# Should this cluster be allowed to run privileged docker containers
+KUBE_ALLOW_PRIV="--allow-privileged=true"
+
+# How the controller-manager, scheduler, and proxy find the apiserver
+
+KUBE_MASTER="--master=http://${APISERVER}:8080"
+
+EOF
+```
+
+该配置文件同时被kube-apiserver、kube-controller-manager、kube-scheduler、kubelet、kube-proxy使用。
+
+注意环境变量   APISERVER
+
+###  {#创建-kubelet-的service配置文件}
+
 ### 创建 kubelet 的service配置文件 {#创建-kubelet-的service配置文件}
 
 文件位置`/usr/lib/systemd/system/kubelet.service`
