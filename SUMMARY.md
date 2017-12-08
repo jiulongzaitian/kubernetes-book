@@ -37,7 +37,9 @@
   * [Federation](kubernetes-new-feature/kubernetes-federation.md)
   * [Pod Priority and Preemption](kubernetes-new-feature/pod-priority-and-preemption.md)
 * [openshift](openshift.md)
-  * openshift 部署
+  * [openshift 部署](openshift/openshift-bu-shu.md)
+  * [Router](bu-shu-zi-ding-yi-haproxy-router.md)
+    * [部署自定义HAProxy](bu-shu-zi-ding-yi-haproxy-router/aa.md)
 * [harbor](harbor.md)
   * [harbor高可用部署](harbor/harborgao-ke-yong-bu-shu.md)
 * [docker-compose](docker-compose.md)
