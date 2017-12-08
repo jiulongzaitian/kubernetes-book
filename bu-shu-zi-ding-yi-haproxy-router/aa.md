@@ -233,7 +233,7 @@ global
 {{ end }}
 ```
 
- 上面的操作会将global拷贝到文件/var/lib/haproxy/conf/haproxy.config中，然后关闭该文件。
+上面的操作会将global拷贝到文件/var/lib/haproxy/conf/haproxy.config中，然后关闭该文件。
 
 通过环境变量设置日志
 
@@ -243,5 +243,17 @@ global
 {{ end }}
 ```
 
+### 总结
 
+上面其实主要介绍了template的一些配置。所谓的自定义安装HAProxy，其实指的是通过修改template来自定义HAProxy的配置。
+
+实现方法：
+
+1.是构建一个configMap，将修改过的template关联到该configMap上。当再次部署router的时候，通过configMap将自定义的template应用到新的HAProxy上。
+
+2.是修改template后，重新构建一个image，在部署router的时候，指定该image。
+
+
+
+详细配置查看原文连接：https://docs.openshift.org/latest/install\_config/router/customized\_haproxy\_router.html
 
