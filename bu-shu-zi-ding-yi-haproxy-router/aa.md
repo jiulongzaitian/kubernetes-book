@@ -227,3 +227,21 @@ template能够使用router pod中的所有环境变量。环境变量可以通�
 
 template可以创建任意数量的输出文件。文件名称为`define`的参数。
 
+```
+{{ define "/var/lib/haproxy/conf/haproxy.config" }}
+global
+{{ end }}
+```
+
+ 上面的操作会将global拷贝到文件/var/lib/haproxy/conf/haproxy.config中，然后关闭该文件。
+
+通过环境变量设置日志
+
+```
+{{ with (env "ROUTER_SYSLOG_ADDRESS" "") }}
+  log {{.}} {{env "ROUTER_LOG_FACILITY" "local1"}} {{env "ROUTER_LOG_LEVEL" "warning"}}
+{{ end }}
+```
+
+
+
