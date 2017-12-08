@@ -106,7 +106,7 @@ HAProxy的配置文件通过template生成，在生成过程中，所有`{{" som
 | `ServiceUnitNames` | `map[string]int32` | Collection of services that support this route, keyed by service name and valued on the weight attached to it with respect to other entries in the map. |
 | `ActiveServiceUnits` | int | Count of the`ServiceUnitNames`with a non-zero weight. |
 
-`ServiceAliasConfig`是service的route配置. 由host + path确定唯一性. 默认template通过`{{range $cfgIdx, $cfg := .State }}` 遍历所有routes. 
+`ServiceAliasConfig`是service的route配置. 由host + path确定唯一性. 默认template通过`{{range $cfgIdx, $cfg := .State }}` 遍历所有routes.
 
 | 表4，ServiceUnit |  |  |
 | :--- | :--- | :--- |
@@ -114,7 +114,7 @@ HAProxy的配置文件通过template生成，在生成过程中，所有`{{" som
 | `Name` | string | Name corresponds to a service name + namespace. Uniquely identifies the`ServiceUnit`. |
 | `EndpointTable` | `[]Endpoint` | Endpoints that back the service. This translates into a final back-end implementation for routers. |
 
-`ServiceUnit`是service的封装，包括service后端的endpoints和指向service的routes. 
+`ServiceUnit`是service的封装，包括service后端的endpoints和指向service的routes.
 
 | 表5，Router Endpoint |  |
 | :--- | :--- |
@@ -129,11 +129,11 @@ HAProxy的配置文件通过template生成，在生成过程中，所有`{{" som
 
 `Endpoint`is an internal representation of a Kubernetes endpoint.
 
-| 表6，Router Certificate, ServiceAliasConfigStatus |   |  |  |
+| 表6，Router Certificate, ServiceAliasConfigStatus |  |  |  |
 | :--- | :--- | :--- | :--- |
-| Field | Type | Description |
-| `Certificate` | string | Represents a public/private key pair. It is identified by an ID, which will become the file name. A CA certificate will not have a`PrivateKey`set. |
-| `ServiceAliasConfigStatus` | string | Indicates that the necessary files for this configuration have been persisted to disk. Valid values: "saved", "". |
+|  | Field | Type | Description |
+|  | `Certificate` | string | Represents a public/private key pair. It is identified by an ID, which will become the file name. A CA certificate will not have a`PrivateKey`set. |
+|  | `ServiceAliasConfigStatus` | string | Indicates that the necessary files for this configuration have been persisted to disk. Valid values: "saved", "". |
 
 | 表7，Router Certificate Type |  |  |
 | :--- | :--- | :--- |
@@ -204,5 +204,26 @@ $ oc annotate route <route-name> --overwrite whiteListCertCommonName="CN1 CN2 CN
 
 ### 环境变量
 
-template能够使用
+template能够使用router pod中的所有环境变量。环境变量可以通过deployment configuration进行设置。
+
+在使用时通过函数`env`获得环境变量的值：
+
+```
+{{env "ROUTER_MAX_CONNECTIONS" "20000"}}
+```
+
+### 用例
+
+下面是一个简单的HAProxy template文件
+
+由以下内容开头：
+
+```
+{{/*
+  Here is a small example of how to work with templates
+  taken from the HAProxy template file.
+*/}}
+```
+
+template可以创建任意数量的输出文件。文件名称为`define`的参数。
 
