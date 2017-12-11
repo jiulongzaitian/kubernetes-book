@@ -75,6 +75,10 @@ gofmt -l -s -w ${KUBE_REMOTE_RUNTIME_ROOT}/api.pb.go
 
 如果你修改了相关的proto 描述文件，最终需要调用一下这个脚本:hack/update-generated-runtime.sh
 
+
+
+在api.proto 里描述了两个service，RuntimeService 和ImageService
+
 # 未完待续。。。
 
 
