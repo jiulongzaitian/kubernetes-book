@@ -56,7 +56,8 @@
 以10.72.84.160 这台主机为例
 
 ```
-echo "export IP=10.72.84.160" >> ~/.bashrc
+IP=$(ifconfig eth0 |grep inet |grep netmask |grep broadcast |awk -F " " '{printf $2 }')
+echo "export IP=${IP}" >> ~/.bashrc
 source ~/.bashrc
 ```
 
