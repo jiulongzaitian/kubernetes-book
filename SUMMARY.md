@@ -36,6 +36,7 @@
   * [Garbage Collection](kubernetes-new-feature/garbage-collection.md)
   * [Federation](kubernetes-new-feature/kubernetes-federation.md)
   * [Pod Priority and Preemption](kubernetes-new-feature/pod-priority-and-preemption.md)
+  * [设置pod的service accounts](kubernetes-new-feature/she-zhi-pod-de-service-accounts.md)
 * [openshift](openshift.md)
   * [openshift 部署](openshift/openshift-bu-shu.md)
   * [Router](bu-shu-zi-ding-yi-haproxy-router.md)
