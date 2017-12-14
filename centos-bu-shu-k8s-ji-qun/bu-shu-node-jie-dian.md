@@ -472,3 +472,11 @@ systemctl status kube-proxy -l
 
 
 
+## IPtables 规则查看
+
+```
+iptables -L -v -n -t nat
+```
+
+
+
