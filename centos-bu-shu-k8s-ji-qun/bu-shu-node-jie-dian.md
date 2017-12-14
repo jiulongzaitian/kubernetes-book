@@ -110,7 +110,7 @@ etcdctl2 mkdir ${ETCD_PREFIX}
 etcdctl2 mk ${ETCD_PREFIX}/config '{"Network":"172.30.0.0/16","SubnetLen":24,"Backend":{"Type":"vxlan"}}'
 
 #2017-12-01 13:08:27.672156 I | warning: ignoring ServerName for user-provided CA for backwards compatibility is deprecated
-#{"Network":"172.30.0.0/16","SubnetLen":24,"Backend":{"Type":"vxlan"}}
+#{"Network":"172.30.0.0/16","SubnetLen":24,"Backend":{"Type":"host-gw"}}
 ```
 
 如果你要使用`host-gw`模式，可以直接将vxlan改成`host-gw`即可。
@@ -469,8 +469,6 @@ systemctl enable kube-proxy
 systemctl restart kube-proxy
 systemctl status kube-proxy -l
 ```
-
-
 
 ## IPtables 规则查看
 
