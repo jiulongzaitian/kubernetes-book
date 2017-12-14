@@ -4,13 +4,16 @@
 
 ---
 
-
-
 kubernetes 源码中 cluster/addons/dns ：需要搞定4个文件
 
 kubedns-cm.yaml
 
 ```
+mkdir -p ~/sftp/yaml/dns 
+cd ~/sftp/yaml/dns 
+
+
+cat > kubedns-cm.yaml << EOF
 # Copyright 2016 The Kubernetes Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,16 +35,14 @@ metadata:
   namespace: kube-system
   labels:
     addonmanager.kubernetes.io/mode: EnsureExists
-
-
-
+    
+EOF
 ```
 
-kubedns-controller.yaml 
-
-
+kubedns-controller.yaml
 
 ```
+cat > kubedns-controller.yaml << EOF
 # Copyright 2016 The Kubernetes Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -213,13 +214,13 @@ spec:
             cpu: 10m
       dnsPolicy: Default  # Don't use cluster DNS.
       serviceAccountName: kube-dns
-
-
+EOF
 ```
 
 kubedns-sa.yaml
 
 ```
+cat > kubedns-sa.yaml << EOF
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -228,11 +229,13 @@ metadata:
   labels:
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
+EOF
 ```
 
 kubedns-svc.yaml
 
 ```
+cat > kubedns-svc.yaml << EOF
 # Copyright 2016 The Kubernetes Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -270,6 +273,96 @@ spec:
   - name: dns-tcp
     port: 53
     protocol: TCP
+EOF
+```
+
+```
+kubectl create -f .
+```
+
+## 注意
+
+```
+kubedns-svc.yaml 的clusterIP 即明确指定了 kube-dns Service IP，这个 IP 需要和 kubelet 的 --cluster-dns 参数值一致；
+kubedns-controller.yaml __PILLAR__DNS__DOMAIN__ 要用 cluster.local. 跟kubelet 配置一致
+```
+
+## 
+
+## 检测
+
+```
+mkdir -p ~/sftp/yaml/ng
+cd ~/sftp/yaml/ng
+
+cat >  my-nginx.yaml << EOF
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: my-nginx
+spec:
+  replicas: 1 
+  template:
+    metadata:
+      labels:
+        run: my-nginx
+    spec:
+      containers:
+      - name: my-nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
+
+EOF
+
+
+cat > pod-nginx.yaml << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.7.9
+    ports:
+    - containerPort: 80
+
+EOF
+
+
+
+```
+
+```
+kubectl create -f .
+
+kubectl expose deploy my-nginx
+
+kubectl get services --all-namespaces |grep my-nginx
+```
+
+```
+kubectl exec  nginx -i -t -- /bin/bash
+root@nginx:/# cat /etc/resolv.conf
+nameserver 10.254.0.2
+search default.svc.cluster.local. svc.cluster.local. cluster.local. tendcloud.com
+options ndots:5
+
+root@nginx:/# ping my-nginx
+PING my-nginx.default.svc.cluster.local (10.254.179.239): 56 data bytes
+76 bytes from 119.147.223.109: Destination Net Unreachable
+^C--- my-nginx.default.svc.cluster.local ping statistics ---
+
+root@nginx:/# ping kubernetes
+PING kubernetes.default.svc.cluster.local (10.254.0.1): 56 data bytes
+^C--- kubernetes.default.svc.cluster.local ping statistics ---
+11 packets transmitted, 0 packets received, 100% packet loss
+
+root@nginx:/# ping kube-dns.kube-system.svc.cluster.local
+PING kube-dns.kube-system.svc.cluster.local (10.254.0.2): 56 data bytes
+^C--- kube-dns.kube-system.svc.cluster.local ping statistics ---
+6 packets transmitted, 0 packets received, 100% packet loss
 ```
 
 
