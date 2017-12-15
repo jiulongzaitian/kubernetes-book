@@ -51,7 +51,16 @@
 1. 在node节点上安装docker1.12.5
 2. 关闭所有节点的SELinux （重启）
 3. 准备harbor私有镜像仓库
-4. 每个主机上设置IP的环境变量，
+4. 所有主机执行下面的命令
+
+```
+yum install docker telnet wget nfs-utils net-utils -y
+
+modprobe br_netfilter && sysctl net.bridge.bridge-nf-call-iptables=1
+
+```
+
+1. 每个主机上设置IP的环境变量，
 
 以10.72.84.160 这台主机为例
 
@@ -60,6 +69,8 @@ IP=$(ifconfig eth0 |grep inet |grep netmask |grep broadcast |awk -F " " '{printf
 echo "export IP=${IP}" >> ~/.bashrc
 source ~/.bashrc
 ```
+
+##  {#步骤介绍}
 
 ## 步骤介绍 {#步骤介绍}
 
