@@ -2,7 +2,6 @@
 作者：李昂 邮箱：liang@haihangyun.com
 ```
 
-
 ### 介绍
 ---
 从Kubernetes 1.3起，DNS是使用插件管理器集群附件自动启动的内置服务。
