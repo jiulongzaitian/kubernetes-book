@@ -62,6 +62,29 @@ modprobe br_netfilter && sysctl net.bridge.bridge-nf-call-iptables=1
 systemctl disable firewalld && systemctl stop firewalld
 ```
 
+开机加载
+
+```
+vim /etc/modules-load.d/modules.conf
+```
+
+添加下面一行
+
+```
+br_netfilter
+```
+
+vim  /usr/lib/sysctl.d/00-system.conf
+
+```
+# 将 net.bridge.bridge-nf-call-iptables的值改为1，
+# 之后reboot
+# 不同环境net.bridge.bridge-nf-call-iptables 设置位置不一样，
+# 查看 /etc/sysctl.conf  的说明
+```
+
+
+
 1. 每个主机上设置IP的环境变量，
 
 以10.72.84.160 这台主机为例
