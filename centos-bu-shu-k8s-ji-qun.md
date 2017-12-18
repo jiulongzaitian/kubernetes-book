@@ -58,6 +58,8 @@ yum install docker telnet wget nfs-utils net-utils -y
 
 modprobe br_netfilter && sysctl net.bridge.bridge-nf-call-iptables=1
 modprobe br_netfilter && sysctl net.bridge.bridge-nf-call-iptables=1
+
+systemctl disable firewalld && systemctl stop firewalld 
 ```
 
 1. 每个主机上设置IP的环境变量，
