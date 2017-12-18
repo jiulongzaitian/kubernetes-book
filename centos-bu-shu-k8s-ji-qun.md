@@ -54,12 +54,12 @@
 4. 所有主机执行下面的命令
 
 ```
-yum install docker telnet wget nfs-utils net-utils -y
+yum install docker telnet wget nfs-utils net-tools -y
 
 modprobe br_netfilter && sysctl net.bridge.bridge-nf-call-iptables=1
 modprobe br_netfilter && sysctl net.bridge.bridge-nf-call-iptables=1
 
-systemctl disable firewalld && systemctl stop firewalld 
+systemctl disable firewalld && systemctl stop firewalld
 ```
 
 1. 每个主机上设置IP的环境变量，
