@@ -70,6 +70,8 @@ systemctl disable firewalld && systemctl stop firewalld
 IP=$(ifconfig eth0 |grep inet |grep netmask |grep broadcast |awk -F " " '{printf $2 }')
 echo "export IP=${IP}" >> ~/.bashrc
 source ~/.bashrc
+
+echo "验证IP 结果 IP=$IP"
 ```
 
 ##  {#步骤介绍}
