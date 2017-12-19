@@ -75,9 +75,88 @@ gofmt -l -s -w ${KUBE_REMOTE_RUNTIME_ROOT}/api.pb.go
 
 如果你修改了相关的proto 描述文件，最终需要调用一下这个脚本:hack/update-generated-runtime.sh
 
-
-
 在api.proto 里描述了两个service，RuntimeService 和ImageService
+
+那这是如何对应kubelet的代码呢 。。。。
+
+
+
+## kubelet CRI
+
+pkg/kubelet/kubelet.go  NewMainKubelet（） 方法 里有对grpc server 的初始化
+
+``` golang
+	// rktnetes cannot be run with CRI.
+	
+	if containerRuntime != kubetypes.RktContainerRuntime {
+		
+		klet.networkPlugin = nil
+		// if left at nil, that means it is unneeded
+		var legacyLogProvider kuberuntime.LegacyLogProvider
+
+		switch containerRuntime {
+		case kubetypes.DockerContainerRuntime:
+			// Create and start the CRI shim running as a grpc server.
+
+			streamingConfig := getStreamingConfig(kubeCfg, kubeDeps)
+			ds, err := dockershim.NewDockerService(kubeDeps.DockerClientConfig, crOptions.PodSandboxImage, streamingConfig,
+				&pluginSettings, runtimeCgroups, kubeCfg.CgroupDriver, crOptions.DockershimRootDirectory,
+				crOptions.DockerDisableSharedPID)
+			if err != nil {
+				return nil, err
+			}
+			if err := ds.Start(); err != nil {
+				return nil, err
+			}
+			// For now, the CRI shim redirects the streaming requests to the
+			// kubelet, which handles the requests using DockerService..
+			klet.criHandler = ds
+
+			// The unix socket for kubelet <-> dockershim communication.
+			glog.V(5).Infof("RemoteRuntimeEndpoint: %q, RemoteImageEndpoint: %q",
+				remoteRuntimeEndpoint,
+				remoteImageEndpoint)
+			glog.V(2).Infof("Starting the GRPC server for the docker CRI shim.")
+			// grpc server
+
+			// 这一块的代码 需要了解 CRI 和docker 关系
+			// CRT shim 是一个grpc 的server
+			// kubelet 通过grpc 的协议跟它通信
+			// 然后shim 再与runc 通信
+			server := dockerremote.NewDockerServer(remoteRuntimeEndpoint, ds)
+			if err := server.Start(); err != nil {
+				return nil, err
+			}
+
+			// Create dockerLegacyService when the logging driver is not supported.
+			supported, err := ds.IsCRISupportedLogDriver()
+			if err != nil {
+				return nil, err
+			}
+			if !supported {
+				klet.dockerLegacyService = ds.NewDockerLegacyService()
+				legacyLogProvider = dockershim.NewLegacyLogProvider(klet.dockerLegacyService)
+			}
+		case kubetypes.RemoteContainerRuntime:
+			// No-op.
+			break
+		default:
+			return nil, fmt.Errorf("unsupported CRI runtime: %q", containerRuntime)
+		}
+		runtimeService, imageService, err := getRuntimeAndImageServices(remoteRuntimeEndpoint, remoteImageEndpoint, kubeCfg.RuntimeRequestTimeout)
+		if err != nil {
+			return nil, err
+		}
+
+```
+
+dockerremote.NewDockerServer  就是对Grpc server 的初始化，相信只要玩过PB-Grpc 的都能大体知道初始化的过程
+
+之后会创建 runtimeService 和 imageService， 通过追踪 getRuntimeAndImageServices（） 代码我们可以看到这是grpc client 初始化的过程
+
+
+
+
 
 # 未完待续。。。
 
