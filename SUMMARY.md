@@ -25,6 +25,7 @@
     * [kubelet 核心manager](yuan-ma-fen-xi/scheduler/kubelet-he-xin-manager.md)
     * [kubelet CRI](yuan-ma-fen-xi/scheduler/kubelet-cri.md)
     * [kubelet image 垃圾回收](yuan-ma-fen-xi/scheduler/kubelet-image-la-ji-hui-shou.md)
+    * [kubelet sourceReady](yuan-ma-fen-xi/scheduler/kubelet-sourceready.md)
   * [kube-scheduler简析](yuan-ma-fen-xi/kube-scheduler.md)
     * [scheduler主启动流程](yuan-ma-fen-xi/kube-scheduler/schedulerzhu-qi-dong-liu-cheng.md)
     * [scheduler初始化](yuan-ma-fen-xi/kube-scheduler/schedulerchu-shi-hua.md)
