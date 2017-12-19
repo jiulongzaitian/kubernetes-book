@@ -12,7 +12,17 @@
 
 # sourcesReady
 
-... 未完待续
+在看kubelet代码时候，会经常看到 sourcesReady 的字段，或者 AllReady 的方法, 可以查看：[ kubelet sourceReady](/yuan-ma-fen-xi/scheduler/kubelet-sourceready.md) 一章
+
+
+
+pkg/kubelet/kubelet.go
+
+Kubelet ： Run\(\) -&gt; kl.initializeModules\(\) -&gt; [kl.imageManager.Start\(\)](/yuan-ma-fen-xi/scheduler/kubelet-image-la-ji-hui-shou.md) 
+
+
+
+# ... 未完待续
 
 
 
