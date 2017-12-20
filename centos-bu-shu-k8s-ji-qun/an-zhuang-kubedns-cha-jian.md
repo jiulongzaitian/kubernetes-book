@@ -1,6 +1,10 @@
 # 安装kubedns 插件
 
-**张杰    j.zhang8@haihangyun.com**
+
+
+```
+作者：张杰  j.zhang8@haihangyun.com
+```
 
 ---
 
@@ -35,7 +39,7 @@ metadata:
   namespace: kube-system
   labels:
     addonmanager.kubernetes.io/mode: EnsureExists
-    
+
 EOF
 ```
 
@@ -329,9 +333,6 @@ spec:
     - containerPort: 80
 
 EOF
-
-
-
 ```
 
 ```
