@@ -416,6 +416,9 @@ func (m *manager) detectSubcontainers(containerName string) error {
 
 	return nil
 }
+```
+以createContainer 为例 调用了 createContainerLocked（） 最终处理了add 和 destroy container
+而 containers 的更新 是在 watchForNewContainers 实现的
 
 
 
