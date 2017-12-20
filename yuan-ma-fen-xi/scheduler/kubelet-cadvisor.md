@@ -296,5 +296,126 @@ func (self *manager) getContainerData(containerName string) (*containerData, err
 那么上文也说了 ，containers 数据是哪里来的
 
 代码追踪：
-pkg/kubelet/kubelet.go
+pkg/kubelet/kubelet.go NewMainKubelet（） 方法,构造kubelet  对象时候 ,会将 kubeDeps.CAdvisorInterface 赋值给Kubelet 的 cadvisor 变量
+``` golang 
+klet := &Kubelet{
+		hostname:        hostname,
+...
+		cadvisor:                       kubeDeps.CAdvisorInterface,
+...
+		keepTerminatedPodVolumes:                keepTerminatedPodVolumes,
+	}
+```
+在 最终的kubelet的 Run 方法里会调用  updateRuntimeUp（） -> initializeRuntimeDependentModules() -> kl.cadvisor.Start()
+``` golang 
+// Run starts the kubelet reacting to config updates
+func (kl *Kubelet) Run(updates <-chan kubetypes.PodUpdate) {
+	if kl.logServer == nil {
+		kl.logServer = http.StripPrefix("/logs/", http.FileServer(http.Dir("/var/log/")))
+	}
+	if kl.kubeClient == nil {
+		glog.Warning("No api server defined - no node status update will be sent.")
+	}
+
+...
+	go wait.Until(kl.updateRuntimeUp, 5*time.Second, wait.NeverStop)
+...
+	kl.pleg.Start()
+	kl.syncLoop(updates, kl)
+}
+
+```
+我们追踪 kl.cadvisor.Start() 方法 （如果是linux 环境 pkg/kubelet/cadvisor/cadvisor_linux.go）
+
+``` golang 
+func (cc *cadvisorClient) Start() error {
+	return cc.Manager.Start()
+}
+
+```
+
+继续追 cc.Manager.Start() 又到了manager vendor/github.com/google/cadvisor/manager/manager.go
+
+``` golang 
+
+// Start the container manager.
+func (self *manager) Start() error {
+	err := docker.Register(self, self.fsInfo, self.ignoreMetrics)
+	if err != nil {
+		glog.Warningf("Docker container factory registration failed: %v.", err)
+	}
+...
+	err = containerd.Register(self, self.fsInfo, self.ignoreMetrics)
+	if err != nil {
+		glog.Warningf("Registration of the containerd container factory failed: %v", err)
+	}
+...
+	go self.globalHousekeeping(quitGlobalHousekeeping)
+
+	return nil
+}
+
+```
+函数中几个Register 方法，会将对应的Factory 注册到 全局变量 factories 中，k8s 在一些注册方法中，经常喜欢使用全局变量，这些风格可以在scheduler ，controller-manager 中经常看到，并且会加上类似  的sync.RWMutex锁
+
+追踪核心方法： self.globalHousekeeping（） 这个一个协程,会调用核心方法  detectSubcontainers（）
+
+``` golang
+func (self *manager) globalHousekeeping(quit chan error) {
+	// Long housekeeping is either 100ms or half of the housekeeping interval.
+...
+	ticker := time.Tick(*globalHousekeepingInterval)
+	for {
+		select {
+		case t := <-ticker:
+			start := time.Now()
+
+			// Check for new containers.
+			err := self.detectSubcontainers("/")
+			if err != nil {
+				glog.Errorf("Failed to detect containers: %s", err)
+			}
+
+			// Log if housekeeping took too long.
+			duration := time.Since(start)
+			if duration >= longHousekeeping {
+				glog.V(3).Infof("Global Housekeeping(%d) took %s", t.Unix(), duration)
+			}
+...		}
+	}
+}
+
+```
+detectSubcontainers（），此方法主要调用两个方法 createContainer和destroyContainer
+
+``` golang 
+
+
+```// Detect the existing subcontainers and reflect the setup here.
+func (m *manager) detectSubcontainers(containerName string) error {
+	added, removed, err := m.getContainersDiff(containerName)
+	if err != nil {
+		return err
+	}
+
+	// Add the new containers.
+	for _, cont := range added {
+		err = m.createContainer(cont.Name, watcher.Raw)
+		if err != nil {
+			glog.Errorf("Failed to create existing container: %s: %s", cont.Name, err)
+		}
+	}
+
+	// Remove the old containers.
+	for _, cont := range removed {
+		err = m.destroyContainer(cont.Name)
+		if err != nil {
+			glog.Errorf("Failed to destroy existing container: %s: %s", cont.Name, err)
+		}
+	}
+
+	return nil
+}
+
+
 
