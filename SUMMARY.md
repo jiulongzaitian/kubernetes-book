@@ -13,6 +13,7 @@
   * [安装heapster插件](centos-bu-shu-k8s-ji-qun/an-zhuang-heapster-cha-jian.md)
   * [创建用户认证授权的kubeconfig文件](centos-bu-shu-k8s-ji-qun/shi-yong-rbac-pei-zhi-pu-tong-yong-hu-de-cao-zuo-quan-xian.md)
   * [使用kubeadm创建k8s集群](centos-bu-shu-k8s-ji-qun/shi-yong-kubeadm-chuang-jian-k8s-ji-qun.md)
+  * [使用kubeconfig 或者token 进行用户的身份认证](centos-bu-shu-k8s-ji-qun/shi-yong-kubeconfig-huo-zhe-token-jin-xing-yong-hu-de-shen-fen-ren-zheng.md)
 * [kubernetes源码分析](yuan-ma-fen-xi.md)
   * [kubelet简析](yuan-ma-fen-xi/scheduler.md)
     * [kubelet主要功能](yuan-ma-fen-xi/scheduler/kubeletzhu-yao-gong-neng.md)
