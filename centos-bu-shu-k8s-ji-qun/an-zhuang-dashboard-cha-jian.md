@@ -6,17 +6,9 @@
 
 ---
 
-
-
-
-
 ```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
-
-
 ```
-
-
 
 可以通过 curl 命令查看yaml文件的内容
 
@@ -25,8 +17,6 @@ curl -L https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy
 ```
 
 我们可以看到很多role bind 和 deploy
-
-
 
 ```
 # Copyright 2017 The Kubernetes Authors.
@@ -199,4 +189,21 @@ spec:
 ```
 
 注意， 里面的镜像如果被墙，你需要自己想办法，相信你，你可以的 ~~~
+
+
+
+## 访问 
+
+```
+# 先用本地kubectl proxy 打开 注意要用正确的对应config 文件
+
+kubectl proxy 
+
+
+# 浏览器访问
+
+http://127.0.0.1:8001/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+```
+
+
 
