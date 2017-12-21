@@ -42,6 +42,7 @@
   * [Pod Priority and Preemption](kubernetes-new-feature/pod-priority-and-preemption.md)
   * [设置pod的service accounts](kubernetes-new-feature/she-zhi-pod-de-service-accounts.md)
   * [DNS Pods and Services](kubernetes-new-feature/dns-pods-and-services.md)
+  * [StatefulSet](kubernetes-new-feature/statefulset.md)
 * [openshift](openshift.md)
   * [openshift 部署](openshift/openshift-bu-shu.md)
   * [Router](bu-shu-zi-ding-yi-haproxy-router.md)
