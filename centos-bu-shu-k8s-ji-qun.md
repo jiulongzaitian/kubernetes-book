@@ -83,8 +83,6 @@ vim  /usr/lib/sysctl.d/00-system.conf
 # 查看 /etc/sysctl.conf  的说明
 ```
 
-
-
 1. 每个主机上设置IP的环境变量，
 
 以10.72.84.160 这台主机为例
@@ -127,4 +125,8 @@ echo "验证IP 结果 IP=$IP"
 3. 该部署操作仅是搭建成了一个可用 kubernetes 集群，而很多地方还需要进行优化，heapster 插件、EFK 插件不一定会用于真实的生产环境中，但是通过部署这些插件，可以让大家了解到如何部署应用到集群上。
 
 **注：本安装文档参考了**[**opsnull 跟我一步步部署 kubernetes 集群**](https://github.com/opsnull/follow-me-install-kubernetes-cluster/)
+
+
+
+[https://github.com/kelseyhightower/kubernetes-the-hard-way](https://github.com/kelseyhightower/kubernetes-the-hard-way)
 
