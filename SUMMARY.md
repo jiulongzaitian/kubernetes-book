@@ -16,6 +16,8 @@
   * [使用kubeconfig 或者token 进行用户的身份认证](centos-bu-shu-k8s-ji-qun/shi-yong-kubeconfig-huo-zhe-token-jin-xing-yong-hu-de-shen-fen-ren-zheng.md)
   * [minikube 搭建k8s 集群](centos-bu-shu-k8s-ji-qun/minikube-da-jian-k8s-ji-qun.md)
   * [kubectl 命令](centos-bu-shu-k8s-ji-qun/kubectl-ming-ling.md)
+  * [minikube 测试kubernetes ingress](centos-bu-shu-k8s-ji-qun/minikube-ce-shi-kubernetes-ingress.md)
+  * [正确使用pullimageSecret ](centos-bu-shu-k8s-ji-qun/zheng-que-shi-yong-pullimagesecret.md)
 * [kubernetes源码分析](yuan-ma-fen-xi.md)
   * [kubelet简析](yuan-ma-fen-xi/scheduler.md)
     * [kubelet主要功能](yuan-ma-fen-xi/scheduler/kubeletzhu-yao-gong-neng.md)
