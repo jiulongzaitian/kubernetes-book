@@ -14,7 +14,8 @@ https://github.com/kubernetes/minikube
 
 # 安装docker 
 # 启动
-minikube start --extra-config=kubelet.CgroupDriver=systemd --vm-driver=none
+minikube start --extra-config=kubelet.RuntimeCgroups=/systemd/system.slice --extra-config=kubelet.KubeletCgroups=/systemd/system.slice  --extra-config=kubelet.CgroupDriver=systemd --vm-driver=none
+
 ```
 
 ## 
