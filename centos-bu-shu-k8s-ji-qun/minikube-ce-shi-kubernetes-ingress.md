@@ -10,6 +10,11 @@
 
 ```
 https://github.com/kubernetes/minikube
+
+
+# 安装docker 
+# 启动
+minikube start --extra-config=kubelet.CgroupDriver=systemd --vm-driver=none
 ```
 
 ## 
@@ -46,8 +51,6 @@ EOF
 ```
 
 **注意： jiulongzaitian/test:1 镜像需要docker login，具体 kubernetes 使用pullimageSecrets 拉取镜像，请参照： **[**正确使用pullimageSecret **](/centos-bu-shu-k8s-ji-qun/zheng-que-shi-yong-pullimagesecret.md)
-
-
 
 ## 创建test svc 文件
 
@@ -108,7 +111,7 @@ EOF
 
 ## 部署ingress Nginx controller
 
-参照：https://github.com/kubernetes/ingress-nginx/blob/master/deploy/README.md
+参照：[https://github.com/kubernetes/ingress-nginx/blob/master/deploy/README.md](https://github.com/kubernetes/ingress-nginx/blob/master/deploy/README.md)
 
 ```
 curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/namespace.yaml \
@@ -125,7 +128,7 @@ curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/tc
 
 curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/udp-services-configmap.yaml \
     | kubectl apply -f -
-    
+
 # use RBAC
 
 curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/rbac.yaml \
@@ -133,10 +136,7 @@ curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/rb
 
 curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/with-rbac.yaml \
     | kubectl apply -f -
-
 ```
-
-
 
 ## 创建资源
 
@@ -144,11 +144,7 @@ curl https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/wi
 kubectl create - f .
 ```
 
-
-
 ## 查看资源
-
-
 
 ```
 kubectl get pod test
