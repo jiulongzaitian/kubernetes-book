@@ -18,6 +18,7 @@
   * [kubectl 命令](centos-bu-shu-k8s-ji-qun/kubectl-ming-ling.md)
   * [minikube 测试kubernetes ingress](centos-bu-shu-k8s-ji-qun/minikube-ce-shi-kubernetes-ingress.md)
   * [正确使用pullimageSecret ](centos-bu-shu-k8s-ji-qun/zheng-que-shi-yong-pullimagesecret.md)
+  * [kubernetes 问题汇总](centos-bu-shu-k8s-ji-qun/kubernetes-wen-ti-hui-zong.md)
 * [kubernetes源码分析](yuan-ma-fen-xi.md)
   * [kubelet简析](yuan-ma-fen-xi/scheduler.md)
     * [kubelet主要功能](yuan-ma-fen-xi/scheduler/kubeletzhu-yao-gong-neng.md)
